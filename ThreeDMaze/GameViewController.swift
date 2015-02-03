@@ -27,9 +27,27 @@ extension SKNode {
 
 class GameViewController: UIViewController {
 
+    override func loadView() {
+        let applicationFram = UIScreen.mainScreen().applicationFrame
+        let skView = SKView(frame: applicationFram)
+        self.view=skView
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        let skView:SKView = self.view as SKView
+        skView.showsDrawCount = true
+        skView.showsNodeCount = true
+        skView.showsFPS=true
+        // このサイズはiPhone6
+        let scene = GameScene(size:CGSizeMake(375, 667))
+        scene.scaleMode = .AspectFit
+        skView.presentScene(scene)
+        
+        
+        
+        #if false
         if let scene = GameScene.unarchiveFromFile("GameScene") as? GameScene {
             // Configure the view.
             let skView = self.view as SKView
@@ -44,6 +62,8 @@ class GameViewController: UIViewController {
             
             skView.presentScene(scene)
         }
+        #endif
+            
     }
 
     override func shouldAutorotate() -> Bool {
