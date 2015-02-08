@@ -11,6 +11,9 @@ import SpriteKit
 class GameScene: SKScene {
     
     var contentCreated = false
+    var playerFront = Direction.N
+    var playerHead = Direction.C
+    var map:[Int] = []
     
     override func didMoveToView(view: SKView) {
         if (!contentCreated) {
@@ -20,10 +23,45 @@ class GameScene: SKScene {
     }
     
     override func touchesBegan(touches: NSSet, withEvent event: UIEvent) {
+        
+        if touches.count != 1 {
+            return
+        }
+        
+        switch playerHead {
+        case .C:
+            playerHead = .W
+        case .W:
+            playerHead = .F
+        case .F:
+            playerHead = .E
+        case .E:
+            playerHead = .C
+        default:
+            playerHead = .C
+        }
+        
+        let _walls = self.getWalls(playerFront, head: playerHead, x: 3, y: 3, z: 1, map: map)
+        refreshScreenWall(_walls)
+        
+        refreshScreenMiniMap(playerFront, head: playerHead, map: map)
+        
+        
     }
     
     override func update(currentTime: CFTimeInterval) {
         /* Called before each frame is rendered */
+        
+        var _node = self.childNodeWithName("debug") as SKLabelNode?
+        if _node == nil {
+            _node = SKLabelNode(text: "")
+           _node!.position = CGPointMake(CGRectGetMidX(frame), CGRectGetMaxY(frame) - 100)
+            _node!.zPosition = 100000
+            _node!.name = "debug"
+            self.addChild(_node!)
+        }
+        _node!.text = "FRONT:" + playerFront.toString() +  " HEAD:" + playerHead.toString()
+        
     }
     
     // MARK: シーン作成
@@ -31,66 +69,57 @@ class GameScene: SKScene {
         
         
         self.backgroundColor = UIColor.whiteColor()
-
+        
         let _maxX = CGRectGetMaxX(frame)
         let _maxY = CGRectGetMaxY(frame)
         
-        let _path = UIBezierPath()
-        _path.moveToPoint(CGPointMake(0, 0))
-        _path.addLineToPoint(CGPointMake(_maxX,0))
-        _path.addLineToPoint(CGPointMake(_maxX,_maxY))
-        _path.addLineToPoint(CGPointMake(0,_maxY))
-        _path.closePath()
-        _path.addLineToPoint(CGPointMake(_maxX, _maxY))
-        _path.moveToPoint(CGPointMake(_maxX, 0))
-        _path.addLineToPoint(CGPointMake(0, _maxY))
         
-        _path.moveToPoint(CGPointMake(_maxX * 0.1, _maxY * 0.1))
-        _path.addLineToPoint(CGPointMake(_maxX * 0.1, _maxY * (1 - 0.1)))
-        
-        let _sprite = SKShapeNode(path: _path.CGPath)
-        _sprite.userData = [:]
-        _sprite.userData!["hp"] = 4
-        _sprite.userData!["ap"] = 25
-        _sprite.userData!["score"] = 100
-        _sprite.fillColor = SKColor.whiteColor()
-        _sprite.strokeColor = SKColor.blackColor()
-        _sprite.name = "enemy"
-        _sprite.zPosition = 100
-
-        addChild(_sprite)
-        
-        
-        var _maps = createMap()
+        map = createMap()
         
         // let _map:[Int]=[]
-        var _x = 0, _y = 0
-        let _max=15
+        var _x = 3, _y = 3, _z = 1
         
-        //for _z in 0..<6 {
-        for _y in 0..<_max {
-            for _x in 0..<_max {
-                
-                if _maps[_x+_y*_max+_max*_max*14] == 0 {
-                    continue
+        let _walls = self.getWalls(playerFront, head: .C, x: _x, y: _y, z: _z, map: map)
+        refreshScreenWall(_walls)
+        
+        let _max=15
+        for _z in [1,2,3] {
+            for _y in 0..<_max {
+                for _x in 0..<_max {
+                    let _wall = getWall(_x, y:_y, z:_z, map:map)
+                    if _wall < 1 {
+                        continue
+                    }
+
+                    let _shape =  SKShapeNode(rect: CGRectMake(0, 0, 5, 5));
+                    _shape.strokeColor = SKColor.blackColor()
+                    _shape.fillColor=SKColor.blackColor()
+                    _shape.position = CGPointMake(CGFloat(_x*5+100), CGFloat(_y*5+100*_z))
+                    _shape.name = "w" + "\(_x+_y*_max)"
+                    _shape.zPosition = 10000
+                    self.addChild(_shape)
                 }
-                
-                let _shape =  SKShapeNode(rect: CGRectMake(0, 0, 5, 5));
-                _shape.strokeColor = SKColor.blackColor()
-                _shape.fillColor=SKColor.blackColor()
-                _shape.position = CGPointMake(CGFloat(_x*5+100), CGFloat(_y*5+100*1))
-                _shape.name = "w" + "\(_x+_y*_max)"
-                //self.addChild(_shape)
             }
         }
-        //}
+        
+        
+        // TEST
+        refreshScreenMiniMap(playerFront, head:.C, map: map)
+    
+    }
+    
+    func getWall(x:Int, y:Int, z:Int, map:[Int])->Int {
+        let _max = 15
+        let _n = x + y * _max + z * _max * _max;
+        if ( _n < 0 || _n >= map.count) {
+            return 0
+        }
+        return map[_n]
     }
     
     func createMap()->[Int] {
         
         var _nowall:[String]=[]
-        //        _x = Int(arc4random_uniform(15)+1)
-        //        _y = Int(arc4random_uniform(15)+1)
         //
         let _max = 15
         var _x = 1
@@ -108,12 +137,6 @@ class GameScene: SKScene {
         var _v=0
         var _key = ""
         
-        
-        //        _key = "w" + "\(_x+_y*_max)"
-        //        if let _node = self.childNodeWithName(_key) {
-        //            _node.hidden=true
-        //        }
-        //        _nowall.append(_key)
         
         _map[_x+_y*_max+_z*_max*_max]=0
         
@@ -138,11 +161,6 @@ class GameScene: SKScene {
                             // var _key1 = "w\(_x+_xx*2+(_y+_yy*2)*_max)"
                             //                    var _key2 = "w\(_x+_xx*1+(_y+_yy*1)*16)"
                             if _n == 1 {
-                                
-                                //}!contains(_nowall, _key1) {
-                                //                        _x += _xx
-                                //                        _y += _yy
-                                //                        _v = (_v + i) % 4
                                 _flg=true
                                 break
                             }
@@ -160,10 +178,6 @@ class GameScene: SKScene {
                     _z += _zz
                     
                     println("x:\(_x) y:\(_y) z:\(_z)")
-                    //                    _key = "w" + "\(_x+_y*_max)"
-                    //                    if let _node = self.childNodeWithName(_key) {
-                    //                        _node.hidden=true
-                    //                    }
                     
                     _xyz = _x + (_y * _max) + (_z * _max * _max)
                     _map[_xyz]=0
@@ -175,11 +189,7 @@ class GameScene: SKScene {
                     println("x:\(_x) y:\(_y) z:\(_z)")
                     _map[_x+(_y*_max)+(_z * _max*_max)]=0
                     
-                    //                    _key = "w" + "\(_x+_y*_max)"
-                    //                    if let _node = self.childNodeWithName(_key) {
-                    //                        _node.hidden=true
-                    //                    }
-                    //                    _nowall.append(_key)
+                    
                     _roads += [_x+_y * _max + _z*_max*_max]
                     continue
                 }
@@ -214,6 +224,24 @@ class GameScene: SKScene {
         case C
         case F
         
+        func toString()->String {
+            switch self {
+            case .N:
+                return "N";
+            case .W:
+                return "W";
+            case .S:
+                return "S";
+            case .E:
+                return "E";
+            case .C:
+                return "C";
+            case .F:
+                return "F";
+            }
+        
+        }
+        
         func xyz()->[Int] {
             switch self {
             case .N:
@@ -232,91 +260,102 @@ class GameScene: SKScene {
         }
     }
     
+    func convertMap(front:Direction, head:Direction, max:Int, map:[Int])->[Int] {
+        return []
+    }
+    
     func calcXyz(front:Direction, head:Direction, x:Int, y:Int, z:Int, xx:Int, yy:Int, zz:Int)->[Int] {
+        
+        var _xyz:[Int] = [xx,yy,zz]
         
         switch front {
         case .N:
             switch head {
             case .C:
-                return [x+xx,y+yy,z+zz]
+                _xyz = [xx,yy,zz]
             case .W:
-                return [z+(-1*xx),y+yy,x+zz]
+                _xyz = [zz,yy,(-1 * xx)]
             case .F:
-                return [x+(-1*xx), y+yy,z+(-1*zz)]
+                _xyz=[(-1*xx), yy,(-1*zz)]
             case .E:
-                return [z+xx,y+yy,x+(-1*zz)]
+                _xyz=[(-1 * zz),yy,xx]
             default:
-                return [x,y,z]
+                _xyz=[xx,yy,zz]
             }
         case .W:
             switch head {
             case .C:
-                return [y+(-1*xx),x+yy,z+zz]
+                _xyz=[yy,(-1*xx),zz]
+                
+
             case .S:
-                return [z+(-1*xx),x+yy,y+zz]
+                _xyz=[(-1*xx),yy,zz]
             case .F:
-                return [y+xx,x+yy,z+(-1*zz)]
+                _xyz=[xx,yy,(-1*zz)]
             case .N:
-                return [z+xx,x+yy,y+(-1*zz)]
+                _xyz=[xx,yy,(-1*zz)]
             default:
-                return [x,y,z]
+                _xyz=[xx,yy,zz]
             }
         case .S:
             switch head {
             case .C:
-                return [x+(-1*xx),y+(-1*yy),z+zz]
+                _xyz=[(-1*xx),(-1*yy),zz]
             case .W:
-                return [z+xx,y+(-1*yy),x+zz]
+                _xyz=[xx,(-1*yy),zz]
             case .F:
-                return [x+xx, y+(-1*yy),z+(-1*zz)]
+                _xyz=[xx, (-1*yy),(-1*zz)]
             case .E:
-                return [z+(-1*xx), y+(-1*yy),x+(-1*zz)]
+                _xyz=[(-1*xx), (-1*yy),(-1*zz)]
             default:
-                return [x,y,z]
+                _xyz=[xx,yy,zz]
             }
         case .E:
             switch head {
             case .C:
-                return [y+xx,x+(-1*yy),z+zz]
+                _xyz=[(-1*yy),xx,zz]
+
             case .S:
-                return [z+xx,x+(-1*yy),y+(-1*zz)]
+                _xyz=[xx, (-1*yy), (-1*zz)]
             case .F:
-                return [y+(-1*xx),x+(-1*yy),z+(-1*zz)]
+                _xyz=[ (-1*xx), (-1*yy), (-1*zz)]
             case .N:
-                return [z+(-1*xx),x+(-1*yy),y+zz]
+                _xyz=[ (-1*xx), (-1*yy), zz]
             default:
-                return [x,y,z]
+                _xyz=[xx,yy,zz]
             }
         case .C:
             switch head {
             case .N:
-                return [x+(-1*xx),z+yy,y+zz]
+                _xyz=[ (-1*xx), yy, zz]
             case .W:
-                return [y+xx,z+yy,x+zz]
+                _xyz=[ xx, yy, zz]
             case .S:
-                return [x+xx,z+yy,y+(-1*zz)]
+                _xyz=[ xx, yy, (-1*zz)]
             case .E:
-                return [y+(-1*xx),z+yy,x+(-1*zz)]
+                _xyz=[ (-1*xx), yy, (-1*zz)]
             default:
-                return [x,y,z]
+                _xyz=[xx,yy,zz]
             }
         case .F:
             switch head {
             case .N:
-                return [x+xx,z+(-1*yy),y+zz]
+                _xyz=[ xx, (-1*yy), zz]
             case .W:
-                return [y+(-1*xx),z+(-1*yy),x+zz]
+                _xyz=[ (-1*xx), (-1*yy), zz]
             case .S:
-                return [x+(-1*xx),z+(-1*yy),y+(-1*zz)]
+                _xyz=[ (-1*xx), (-1*yy), (-1*zz)]
             case .E:
-                return [y+xx,z+(-1*yy),x+(-1*zz)]
+                _xyz=[ xx, (-1*yy), (-1*zz)]
             default:
-                return [x,y,z]
+                _xyz=[xx,yy,zz]
             }
         default:
-            return [x,y,z]
+            _xyz=[xx,yy,zz]
         }
-                
+        
+        return [x+_xyz[0], y+_xyz[1], z+_xyz[2]]
+        
     }
     
     func getWalls(front:Direction, head:Direction, x:Int,y:Int,z:Int, map:[Int])->[Int] {
@@ -324,7 +363,7 @@ class GameScene: SKScene {
         let _max = 15
         func _func(x1:Int,y1:Int,z1:Int)->Int {
             var _index = x1+y1*_max+z1*_max*_max
-            if (map.count<=_index){
+            if (_index < 0 || map.count<=_index){
                 return -1
             }
             return map[_index]
@@ -351,5 +390,149 @@ class GameScene: SKScene {
         
         return _res
     }
-    
+
+    func refreshScreenMiniMap(front:Direction, head:Direction, map:[Int]) {
+        
+        self.enumerateChildNodesWithName("minimap") {
+            node, stop in
+            node.removeFromParent()
+        }
+
+        for (var _y = -7;_y<=7;_y++)  {
+            for (var _x = -7;_x<=7;_x++) {
+                let _xyz = calcXyz(front, head: .C, x: 7, y: 7, z: 1, xx: _x, yy: _y, zz: 0)
+                let _wall = getWall(_xyz[0], y:_xyz[1], z:_xyz[2], map:map)
+                if _wall < 1 {
+                    continue
+                }
+                let _shape =  SKShapeNode(rect: CGRectMake(0, 0, 5, 5));
+                _shape.strokeColor = SKColor.blackColor()
+                _shape.fillColor=SKColor.blackColor()
+                _shape.position = CGPointMake(CGFloat(_x*5+300), CGFloat(_y*5+100))
+                _shape.zPosition = 10000
+                _shape.name="minimap"
+                self.addChild(_shape)
+            }
+        }
+    }
+
+    func refreshScreenWall(map:[Int]) {
+        
+        
+        self.enumerateChildNodesWithName("wall") {
+            node, stop in
+            node.removeFromParent()
+        }
+        
+        let _maxX = CGRectGetMaxX(frame)
+        let _maxY = CGRectGetMaxY(frame)
+        let _ratios:[CGFloat] = [0.0, 0.2,0.35,0.425,0.475,0.5]
+        
+        for _y in [4,3,2,1,0] {
+            var _r1 = _ratios[_y]
+            var _r2 = _ratios[_y+1]
+            var _r3:CGFloat = -1
+            if _y > 0 {
+                _r3 = _ratios[_y-1]
+            }
+            for _z in [0,2,1]  {
+                for _x in [0,2,1] {
+                    if (map[_x+_y*3+_z*3*5] == 0) {
+                        continue;
+                    }
+                    
+                    let _path = UIBezierPath()
+                    
+                    // 天地
+                    if _z == 0 || _z == 2 {
+                        var _ry1 = _r1
+                        var _ry2 = _r2
+                        
+                        // 天
+                        if (_z == 2) {
+                            _ry1 = 1 - _ry1
+                            _ry2 = 1 - _ry2
+                        }
+                        // 中央
+                        if (_x == 1) {
+                            _path.moveToPoint(CGPointMake(_maxX * _r1, _maxY * _ry1))
+                            _path.addLineToPoint(CGPointMake(_maxX * (1 - _r1), _maxY * _ry1))
+                            _path.addLineToPoint(CGPointMake(_maxX * (1 - _r2), _maxY * _ry2))
+                            _path.addLineToPoint(CGPointMake(_maxX * _r2, _maxY * _ry2))
+                            _path.closePath()
+                        } else if (_x == 0){
+                            // 左
+                            _path.moveToPoint(CGPointMake(0, _maxY * _ry1))
+                            _path.addLineToPoint(CGPointMake(_maxX * _r1, _maxY * _ry1))
+                            _path.addLineToPoint(CGPointMake(_maxX * _r2, _maxY * _ry2))
+                            _path.addLineToPoint(CGPointMake(0, _maxY * _ry2))
+                            _path.closePath()
+                        } else if (_x == 2) {
+                            // 右
+                            _path.moveToPoint(CGPointMake(_maxX, _maxY * _ry1))
+                            _path.addLineToPoint(CGPointMake(_maxX * (1 - _r1), _maxY * _ry1))
+                            _path.addLineToPoint(CGPointMake(_maxX * (1 - _r2), _maxY * _ry2))
+                            _path.addLineToPoint(CGPointMake(_maxX, _maxY * _ry2))
+                            _path.closePath()
+                        }
+                    } else
+                    if _z == 1 {
+
+                    
+                    
+                    if (_x == 0 || _x == 2) {
+                        
+                        if (_x == 2) {
+                            _r1 = 1 - _r1
+                            _r2 = 1 - _r2
+                            if _r3 >= 0 {
+                                _r3 = 1 - _r3
+                            }
+                        }
+                        
+                        _path.moveToPoint(CGPointMake(_maxX * _r1, _maxY * _r1))
+                        _path.addLineToPoint(CGPointMake(_maxX * _r1, _maxY * (1 - _r1)))
+                        _path.addLineToPoint(CGPointMake(_maxX * _r2, _maxY * (1 - _r2)))
+                        _path.addLineToPoint(CGPointMake(_maxX * _r2, _maxY * _r2))
+                        _path.closePath()
+                        
+                        
+                        if _r3 >= 0 {
+                            _path.moveToPoint(CGPointMake(_maxX * _r3, _maxY * _r1))
+                            _path.addLineToPoint(CGPointMake(_maxX * _r3, _maxY * (1 - _r1)))
+                            _path.addLineToPoint(CGPointMake(_maxX * _r1, _maxY * (1 - _r1)))
+                            _path.addLineToPoint(CGPointMake(_maxX * _r1, _maxY * _r1))
+                            _path.closePath()
+                            
+                        }
+                    } else {
+                        _path.moveToPoint(CGPointMake(_maxX * _r1, _maxY * _r1))
+                        _path.addLineToPoint(CGPointMake(_maxX * _r1, _maxY * (1-_r1)))
+                        _path.addLineToPoint(CGPointMake(_maxX * (1-_r1), _maxY * (1-_r1)))
+                        _path.addLineToPoint(CGPointMake(_maxX * (1-_r1), _maxY * _r1))
+                        _path.closePath()
+                    }
+                    } else {
+                        continue
+                    }
+                    
+                    let _sprite = SKShapeNode(path: _path.CGPath)
+                    _sprite.userData = [:]
+                    _sprite.userData!["hp"] = 4
+                    _sprite.userData!["ap"] = 25
+                    _sprite.userData!["score"] = 100
+                    _sprite.fillColor = SKColor.redColor()
+                    _sprite.strokeColor = SKColor.blackColor()
+                    _sprite.name = "wall"
+                    _sprite.zPosition = 100
+                    
+                    // _sprite.zRotation = CGFloat(M_PI * 2)
+                    
+                    
+                    self.addChild(_sprite)
+                }
+            }
+        }
+        
+    }
 }
