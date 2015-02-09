@@ -28,18 +28,45 @@ class GameScene: SKScene {
             return
         }
         
-        switch playerHead {
-        case .C:
-            playerHead = .W
-        case .W:
-            playerHead = .F
-        case .F:
-            playerHead = .E
-        case .E:
-            playerHead = .C
-        default:
-            playerHead = .C
+        let _touch: AnyObject = touches.anyObject()!
+        let _location = _touch.locationInNode(self)
+        if let _node:SKNode = self.nodeAtPoint(_location) as SKNode!{
+            var _xx = 0
+            var _zz = 0
+            var _name:String = ((_node.name == nil) ? "" : _node.name!)
+            switch _name {
+            case "right":
+                    _xx = -1
+            case "left":
+                    _xx = 1
+            case "up":
+                    _zz = 1
+            case "down":
+                    _zz = -1
+            default: break;
+            }
+            if (_xx != 0 || _zz != 0) {
+                let _res = changeFrontAndHead(playerFront, head:playerHead, xx:_xx, zz:_zz )
+                playerFront = _res[0]
+                playerHead = _res[1]
+            }
         }
+        
+//        SKNode *node = [self nodeAtPoint:location];
+//        if (YES) NSLog(@"Node name where touch began: %@", node.name);
+//
+//        switch playerHead {
+//        case .C:
+//            playerHead = .W
+//        case .W:
+//            playerHead = .F
+//        case .F:
+//            playerHead = .E
+//        case .E:
+//            playerHead = .C
+//        default:
+//            playerHead = .C
+//        }
         
         let _walls = self.getWalls(playerFront, head: playerHead, x: 3, y: 3, z: 1, map: map)
         refreshScreenWall(_walls)
@@ -52,15 +79,9 @@ class GameScene: SKScene {
     override func update(currentTime: CFTimeInterval) {
         /* Called before each frame is rendered */
         
-        var _node = self.childNodeWithName("debug") as SKLabelNode?
-        if _node == nil {
-            _node = SKLabelNode(text: "")
-           _node!.position = CGPointMake(CGRectGetMidX(frame), CGRectGetMaxY(frame) - 100)
-            _node!.zPosition = 100000
-            _node!.name = "debug"
-            self.addChild(_node!)
+        if let _node:SKLabelNode = childNodeWithName("debug") as SKLabelNode! {
+            _node.text = "FRONT:" + playerFront.toString() +  " HEAD:" + playerHead.toString()
         }
-        _node!.text = "FRONT:" + playerFront.toString() +  " HEAD:" + playerHead.toString()
         
     }
     
@@ -69,6 +90,8 @@ class GameScene: SKScene {
         
         
         self.backgroundColor = UIColor.whiteColor()
+        
+        createLabel()
         
         let _maxX = CGRectGetMaxX(frame)
         let _maxY = CGRectGetMaxY(frame)
@@ -96,7 +119,7 @@ class GameScene: SKScene {
                     _shape.fillColor=SKColor.blackColor()
                     _shape.position = CGPointMake(CGFloat(_x*5+100), CGFloat(_y*5+100*_z))
                     _shape.name = "w" + "\(_x+_y*_max)"
-                    _shape.zPosition = 10000
+                    _shape.zPosition = 1000
                     self.addChild(_shape)
                 }
             }
@@ -106,6 +129,47 @@ class GameScene: SKScene {
         // TEST
         refreshScreenMiniMap(playerFront, head:.C, map: map)
     
+    }
+    
+    func createLabel() {
+        var _zPosition:CGFloat = 10000
+        
+        let _debugLabel = SKLabelNode(text: "")
+        _debugLabel.position = CGPointMake(CGRectGetMidX(frame), CGRectGetMaxY(frame) - 100)
+        _debugLabel.fontSize = 10
+        _debugLabel.zPosition = _zPosition
+        _debugLabel.name = "debug"
+        self.addChild(_debugLabel)
+        
+        let _upLabel = SKLabelNode(text: "UP")
+        _upLabel.position = CGPointMake(CGRectGetMidX(frame), CGRectGetMaxY(frame) - 20)
+        _upLabel.zPosition = _zPosition
+        _upLabel.fontSize = 10
+        _upLabel.name = "up"
+        addChild(_upLabel)
+
+        let _downLabel = SKLabelNode(text: "DOWN")
+        _downLabel.position = CGPointMake(CGRectGetMidX(frame), 20)
+        _downLabel.zPosition = _zPosition
+        _downLabel.fontSize = 10
+        _downLabel.name = "down"
+        addChild(_downLabel)
+
+        let _leftLabel = SKLabelNode(text: "LEFT")
+        _leftLabel.position = CGPointMake(40, CGRectGetMidY(frame))
+        _leftLabel.zPosition = _zPosition
+        _leftLabel.fontSize = 10
+        _leftLabel.name = "left"
+        addChild(_leftLabel)
+        
+        let _rightLabel = SKLabelNode(text: "RIGHT")
+        _rightLabel.position = CGPointMake(CGRectGetMaxX(frame) - 40, CGRectGetMidY(frame))
+        _rightLabel.zPosition = _zPosition
+        _rightLabel.fontSize = 10
+        _rightLabel.name = "right"
+        addChild(_rightLabel)
+        
+        
     }
     
     func getWall(x:Int, y:Int, z:Int, map:[Int])->Int {
@@ -260,6 +324,70 @@ class GameScene: SKScene {
         }
     }
     
+    func changeFrontAndHead(front:Direction, head:Direction, xx:Int, zz:Int)->[Direction] {
+        
+        var _res = [front,head]
+        var _front = front
+        var _head = head
+        
+        // 右、左、上、下の配列を作る
+        switch front {
+        case .N:
+            switch head {
+            case  .C:break
+            case  .W:break
+            case  .E:break
+            case  .F:break
+            default: break
+            }
+        case .W:
+            switch head {
+            case  .C:break
+            case  .S:break
+            case  .F:break
+            case  .N:break
+            default: break
+            }
+        case .S:
+            switch head {
+            case  .C:break
+            case  .W:break
+            case  .F:break
+            case  .E:break
+            default: break
+            }
+        case .E:
+            switch head {
+            case  .C:break
+            case  .S:break
+            case  .F:break
+            case  .N:break
+            default: break
+            }
+        case .C:
+            switch head {
+            case  .N:break
+            case  .W:break
+            case  .S:break
+            case  .E:break
+            default: break
+            }
+        case .F:
+            switch head {
+            case  .N:break
+            case  .W:break
+            case  .S:break
+            case  .E:break
+            default: break
+            }
+        default:break
+        }
+        
+        
+        
+        return [_front, _head]
+    }
+    
     func convertMap(front:Direction, head:Direction, max:Int, map:[Int])->[Int] {
         return []
     }
@@ -409,7 +537,7 @@ class GameScene: SKScene {
                 _shape.strokeColor = SKColor.blackColor()
                 _shape.fillColor=SKColor.blackColor()
                 _shape.position = CGPointMake(CGFloat(_x*5+300), CGFloat(_y*5+100))
-                _shape.zPosition = 10000
+                _shape.zPosition = 1000
                 _shape.name="minimap"
                 self.addChild(_shape)
             }
@@ -447,7 +575,7 @@ class GameScene: SKScene {
                     if _z == 0 || _z == 2 {
                         var _ry1 = _r1
                         var _ry2 = _r2
-                        
+                        var _rz = CGFloat((_z == 2) ? 1 : 0);
                         // 天
                         if (_z == 2) {
                             _ry1 = 1 - _ry1
@@ -460,6 +588,15 @@ class GameScene: SKScene {
                             _path.addLineToPoint(CGPointMake(_maxX * (1 - _r2), _maxY * _ry2))
                             _path.addLineToPoint(CGPointMake(_maxX * _r2, _maxY * _ry2))
                             _path.closePath()
+                            
+                            if (_y > 0) {
+                                _path.moveToPoint(CGPointMake(_maxX * _r1, _maxY * _ry1))
+                                _path.addLineToPoint(CGPointMake(_maxX * (1 - _r1), _maxY * _ry1))
+                                _path.addLineToPoint(CGPointMake(_maxX * (1 - _r1), _maxY * _rz))
+                                _path.addLineToPoint(CGPointMake(_maxX * _r1, _maxY * _rz))
+                                _path.closePath()
+                            }
+                            
                         } else if (_x == 0){
                             // 左
                             _path.moveToPoint(CGPointMake(0, _maxY * _ry1))
