@@ -13,6 +13,7 @@ class GameScene: SKScene {
     var contentCreated = false
     var playerFront = Direction.N
     var playerHead = Direction.C
+    var playerXyz:[Int] = [3,3,1]
     var map:[Int] = []
     
     override func didMoveToView(view: SKView) {
@@ -31,24 +32,22 @@ class GameScene: SKScene {
         let _touch: AnyObject = touches.anyObject()!
         let _location = _touch.locationInNode(self)
         if let _node:SKNode = self.nodeAtPoint(_location) as SKNode!{
-            var _xx = 0
-            var _zz = 0
+            var _rotation:Rotation? = nil
             var _name:String = ((_node.name == nil) ? "" : _node.name!)
             switch _name {
-            case "right":
-                    _xx = -1
-            case "left":
-                    _xx = 1
-            case "up":
-                    _zz = 1
-            case "down":
-                    _zz = -1
+            case "right":_rotation = .RIGHT
+            case "left":_rotation = .LEFT
+            case "up":_rotation = .UP
+            case "down":_rotation = .DOWN
+            case "debug":
+                    let _xyz = playerFront.xyz()
+                    playerXyz = [playerXyz[0]+_xyz[0], playerXyz[1]+_xyz[1], playerXyz[2]+_xyz[2]]
             default: break;
             }
-            if (_xx != 0 || _zz != 0) {
-                let _res = changeFrontAndHead(playerFront, head:playerHead, xx:_xx, zz:_zz )
-                playerFront = _res[0]
-                playerHead = _res[1]
+            if _rotation != nil {
+                let _res = changeFrontAndHead(playerFront, head:playerHead, rotation:_rotation!)
+                playerFront = _res[0];
+                playerHead = _res[1];
             }
         }
         
@@ -68,20 +67,20 @@ class GameScene: SKScene {
 //            playerHead = .C
 //        }
         
-        let _walls = self.getWalls(playerFront, head: playerHead, x: 3, y: 3, z: 1, map: map)
+        let _walls = self.getWalls(playerFront, head: playerHead, x: playerXyz[0], y: playerXyz[1], z: playerXyz[2], map: map)
         refreshScreenWall(_walls)
         
         refreshScreenMiniMap(playerFront, head: playerHead, map: map)
         
+        if let _node:SKLabelNode = childNodeWithName("debug") as SKLabelNode! {
+            _node.text = "FRONT:" + playerFront.toString() +  " HEAD:" + playerHead.toString()
+        }
         
     }
     
     override func update(currentTime: CFTimeInterval) {
         /* Called before each frame is rendered */
         
-        if let _node:SKLabelNode = childNodeWithName("debug") as SKLabelNode! {
-            _node.text = "FRONT:" + playerFront.toString() +  " HEAD:" + playerHead.toString()
-        }
         
     }
     
@@ -136,7 +135,8 @@ class GameScene: SKScene {
         
         let _debugLabel = SKLabelNode(text: "")
         _debugLabel.position = CGPointMake(CGRectGetMidX(frame), CGRectGetMaxY(frame) - 100)
-        _debugLabel.fontSize = 10
+        _debugLabel.fontSize = 20
+       
         _debugLabel.zPosition = _zPosition
         _debugLabel.name = "debug"
         self.addChild(_debugLabel)
@@ -282,9 +282,9 @@ class GameScene: SKScene {
     
     enum Direction {
         case N
-        case W
         case S
         case E
+        case W
         case C
         case F
         
@@ -306,15 +306,31 @@ class GameScene: SKScene {
         
         }
         
+        func opposite()->Direction {
+            switch self {
+            case .N: return .S;
+            case .W: return .E;
+            case .S: return .N;
+            case .E: return .W;
+            case .C: return .F;
+            case .F: return .C;
+            }
+        }
+        
+        func toValue()->Int {
+            let _xyz = self.xyz()
+            return _xyz[0]+_xyz[1]+_xyz[2]
+        }
+        
         func xyz()->[Int] {
             switch self {
             case .N:
                 return [0,1,0];
-            case .W:
-                return [1,0,0];
             case .S:
                 return [0,-1,0];
             case .E:
+                return [1,0,0];
+            case .W:
                 return [-1,0,0];
             case .C:
                 return [0,0,1];
@@ -323,68 +339,112 @@ class GameScene: SKScene {
             }
         }
     }
+
+    func getDirection(xyz:[Int])->Direction {
+        let _directions:[Direction] = [.N, .S, .E, .W, .C, .F]
+        for _d in _directions {
+            if _d.xyz() == xyz {
+                return _d
+            }
+        }
+        return .N
+    }
+
+    func getDirectionRight(front:Direction, head:Direction)->Direction {
+
+        switch front {
+        case .N:
+            switch head {
+            case .C: return .E;
+            case .F: return .W;
+            case .E: return .F;
+            case .W: return .C;
+            default:break;
+            }
+        case .S:
+            switch head {
+            case .C: return .W;
+            case .F: return .E;
+            case .E: return .C;
+            case .W: return .F;
+            default:break;
+            }
+        case .E:
+            switch head {
+            case .C: return .S;
+            case .F: return .N;
+            case .N: return .C;
+            case .S: return .F;
+            default:break;
+            }
+        case .W:
+            switch head {
+            case .C: return .N;
+            case .F: return .S;
+            case .N: return .F;
+            case .S: return .C;
+            default:break;
+            }
+        case .C:
+            switch head {
+            case .N: return .W;
+            case .S: return .E;
+            case .E: return .N;
+            case .W: return .S;
+            default:break;
+            }
+        case .F:
+            switch head {
+            case .N: return .E;
+            case .S: return .W;
+            case .E: return .S;
+            case .W: return .N;
+            default:break;
+            }
+        default:break;
+            
+        }
+        
+        return .C
+    }
+
+    enum Rotation {
+        case RIGHT
+        case LEFT
+        case UP
+        case DOWN
+
+        func toInt()->Int {
+            switch self {
+            case .RIGHT: return 0;
+            case .LEFT: return 1;
+            case .UP: return 2;
+            case .DOWN: return 3;
+            }
+        }
+    }
     
-    func changeFrontAndHead(front:Direction, head:Direction, xx:Int, zz:Int)->[Direction] {
+    func changeFrontAndHead(front:Direction, head:Direction, rotation:Rotation)->[Direction] {
         
         var _res = [front,head]
         var _front = front
         var _head = head
-        
-        // 右、左、上、下の配列を作る
-        switch front {
-        case .N:
-            switch head {
-            case  .C:break
-            case  .W:break
-            case  .E:break
-            case  .F:break
-            default: break
-            }
-        case .W:
-            switch head {
-            case  .C:break
-            case  .S:break
-            case  .F:break
-            case  .N:break
-            default: break
-            }
-        case .S:
-            switch head {
-            case  .C:break
-            case  .W:break
-            case  .F:break
-            case  .E:break
-            default: break
-            }
-        case .E:
-            switch head {
-            case  .C:break
-            case  .S:break
-            case  .F:break
-            case  .N:break
-            default: break
-            }
-        case .C:
-            switch head {
-            case  .N:break
-            case  .W:break
-            case  .S:break
-            case  .E:break
-            default: break
-            }
-        case .F:
-            switch head {
-            case  .N:break
-            case  .W:break
-            case  .S:break
-            case  .E:break
-            default: break
-            }
-        default:break
+
+        if rotation == .UP {
+            let _opp = _front.opposite()
+            _front = _head
+            _head = _opp
+        } else if rotation == .DOWN {
+            let _opp = _head.opposite()
+            _head = _front
+            _front = _opp
+        } else if rotation == .RIGHT {
+            _front = getDirectionRight(_front, head: _head)
+        } else if rotation == .LEFT {
+            _front = getDirectionRight(_front, head: _head)
+            _front = _front.opposite()
         }
-        
-        
-        
+
         return [_front, _head]
     }
     
@@ -399,87 +459,53 @@ class GameScene: SKScene {
         switch front {
         case .N:
             switch head {
-            case .C:
-                _xyz = [xx,yy,zz]
-            case .W:
-                _xyz = [zz,yy,(-1 * xx)]
-            case .F:
-                _xyz=[(-1*xx), yy,(-1*zz)]
-            case .E:
-                _xyz=[(-1 * zz),yy,xx]
-            default:
-                _xyz=[xx,yy,zz]
-            }
-        case .W:
-            switch head {
-            case .C:
-                _xyz=[yy,(-1*xx),zz]
-                
-
-            case .S:
-                _xyz=[(-1*xx),yy,zz]
-            case .F:
-                _xyz=[xx,yy,(-1*zz)]
-            case .N:
-                _xyz=[xx,yy,(-1*zz)]
-            default:
-                _xyz=[xx,yy,zz]
+            case .C:_xyz = [xx,yy,zz]
+            case .F:_xyz=[(-1*xx), yy,(-1*zz)]
+            case .E:_xyz=[zz,yy, (-1 * xx)]
+            case .W:_xyz = [(-1 * zz),yy, xx]
+            default:break;
             }
         case .S:
             switch head {
-            case .C:
-                _xyz=[(-1*xx),(-1*yy),zz]
-            case .W:
-                _xyz=[xx,(-1*yy),zz]
-            case .F:
-                _xyz=[xx, (-1*yy),(-1*zz)]
-            case .E:
-                _xyz=[(-1*xx), (-1*yy),(-1*zz)]
-            default:
-                _xyz=[xx,yy,zz]
+            case .C:_xyz=[(-1*xx),(-1*yy),zz]
+            case .F:_xyz=[xx, (-1*yy),(-1*zz)]
+            case .E:_xyz=[zz,(-1*yy),xx]
+            case .W:_xyz=[(-1*zz), (-1*yy),(-1*xx)]
+            default:break;
             }
         case .E:
             switch head {
-            case .C:
-                _xyz=[(-1*yy),xx,zz]
-
-            case .S:
-                _xyz=[xx, (-1*yy), (-1*zz)]
-            case .F:
-                _xyz=[ (-1*xx), (-1*yy), (-1*zz)]
-            case .N:
-                _xyz=[ (-1*xx), (-1*yy), zz]
-            default:
-                _xyz=[xx,yy,zz]
+            case .C:_xyz=[(-1*yy),xx,zz]
+            case .F:_xyz=[yy, xx, (-1*zz)]
+            case .N:_xyz=[zz, xx, yy]
+            case .S:_xyz=[(-1*zz),xx, (-1 * yy)]
+            default:break;
+            }
+        case .W:
+            switch head {
+            case .C:_xyz=[(yy),(-1*xx),zz]
+            case .F:_xyz=[yy,(-1*xx),(-1*zz)]
+            case .N:_xyz=[zz,(-1*xx),yy]
+            case .S:_xyz=[(-1*zz),(-1*xx),(-1*yy)]
+            default:break;
             }
         case .C:
             switch head {
-            case .N:
-                _xyz=[ (-1*xx), yy, zz]
-            case .W:
-                _xyz=[ xx, yy, zz]
-            case .S:
-                _xyz=[ xx, yy, (-1*zz)]
-            case .E:
-                _xyz=[ (-1*xx), yy, (-1*zz)]
-            default:
-                _xyz=[xx,yy,zz]
+            case .N:_xyz=[ (-1*xx), zz, yy]
+            case .S:_xyz=[ xx, zz, (-1*yy)]
+            case .E:_xyz=[ yy, zz, xx]
+            case .W:_xyz=[ (-1*yy), zz, (-1*xx)]
+            default:break;
             }
         case .F:
             switch head {
-            case .N:
-                _xyz=[ xx, (-1*yy), zz]
-            case .W:
-                _xyz=[ (-1*xx), (-1*yy), zz]
-            case .S:
-                _xyz=[ (-1*xx), (-1*yy), (-1*zz)]
-            case .E:
-                _xyz=[ xx, (-1*yy), (-1*zz)]
-            default:
-                _xyz=[xx,yy,zz]
+            case .N:_xyz=[ xx, (-1*zz), yy]
+            case .S:_xyz=[ (-1*xx), (-1*zz), (-1*yy)]
+            case .E:_xyz=[ yy, (-1*zz), (-1*xx)]
+            case .W:_xyz=[ (-1*yy), (-1*zz), xx]
+            default:break;
             }
-        default:
-            _xyz=[xx,yy,zz]
+        default:break;
         }
         
         return [x+_xyz[0], y+_xyz[1], z+_xyz[2]]
