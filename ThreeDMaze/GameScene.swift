@@ -61,7 +61,7 @@ class GameScene: SKScene {
                 _xyz = [player.xyz[0]+_xyz[0], player.xyz[1]+_xyz[1], player.xyz[2]+_xyz[2]]
                 let _frontField = getField(_xyz[0], y: _xyz[1], z:_xyz[2] , map: map)
                 if _frontField.wall == false {
-                    player.xyz = [player.xyz[0]+_xyz[0], player.xyz[1]+_xyz[1], player.xyz[2]+_xyz[2]]
+                    player.xyz = _xyz
                     
                 }
                 
