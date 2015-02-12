@@ -19,6 +19,7 @@
 		07A759FA1A81040E00914243 /* ThreeDMazeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07A759F91A81040E00914243 /* ThreeDMazeTests.swift */; };
 		07E39AE21A8CEDED00279A1E /* Game2ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07E39AE11A8CEDED00279A1E /* Game2ViewController.swift */; };
 		07E39AE41A8CEE1F00279A1E /* 100x100.png in Resources */ = {isa = PBXBuildFile; fileRef = 07E39AE31A8CEE1F00279A1E /* 100x100.png */; };
+		07E39AE61A8D0B1200279A1E /* Map.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07E39AE51A8D0B1200279A1E /* Map.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,6 +49,7 @@
 		07A759F91A81040E00914243 /* ThreeDMazeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreeDMazeTests.swift; sourceTree = "<group>"; };
 		07E39AE11A8CEDED00279A1E /* Game2ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Game2ViewController.swift; sourceTree = "<group>"; };
 		07E39AE31A8CEE1F00279A1E /* 100x100.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 100x100.png; sourceTree = "<group>"; };
+		07E39AE51A8D0B1200279A1E /* Map.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Map.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,6 +103,7 @@
 				07A759DD1A81040E00914243 /* Supporting Files */,
 				07E39AE11A8CEDED00279A1E /* Game2ViewController.swift */,
 				07E39AE31A8CEE1F00279A1E /* 100x100.png */,
+				07E39AE51A8D0B1200279A1E /* Map.swift */,
 			);
 			path = ThreeDMaze;
 			sourceTree = "<group>";
@@ -233,6 +236,7 @@
 			files = (
 				0776CF2C1A8B6F7000EDF73E /* Field.swift in Sources */,
 				07A759E41A81040E00914243 /* GameScene.swift in Sources */,
+				07E39AE61A8D0B1200279A1E /* Map.swift in Sources */,
 				07A759E61A81040E00914243 /* GameViewController.swift in Sources */,
 				07A759E01A81040E00914243 /* AppDelegate.swift in Sources */,
 				0776CF2B1A8B6F7000EDF73E /* Direction.swift in Sources */,

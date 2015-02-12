@@ -9,8 +9,18 @@
 // これが正しいもの 20150210
 
 import SpriteKit
+import SceneKit
+
+protocol GameSceneDelegate{
+    func getCameraNode()->SCNNode
+
+    func setCameraRotateAndPosition(front:Direction, head:Direction, x:Int, y:Int, z:Int)
+
+}
 
 class GameScene: SKScene {
+    
+    var gameSceneDelegate:GameSceneDelegate! = nil
     
     var contentCreated = false
     
@@ -28,7 +38,6 @@ class GameScene: SKScene {
     }
     
     override func touchesBegan(touches: NSSet, withEvent event: UIEvent) {
-        
         if touches.count != 1 {
             return
         }
@@ -95,7 +104,7 @@ class GameScene: SKScene {
             let _xyz = player.front.calcXyz(player.head, x: player.xyz[0], y: player.xyz[1], z: player.xyz[2], xx:-1, yy:0, zz:0)
             _node.text = "LEFT(\(_xyz[0]),\(_xyz[1]),\(_xyz[2]))";
         }
-        
+
     }
     
     override func update(currentTime: CFTimeInterval) {
@@ -108,29 +117,61 @@ class GameScene: SKScene {
     func createContentScene() {
         
         
-        self.backgroundColor = UIColor.whiteColor()
+//        self.backgroundColor = UIColor.whiteColor()
         
         createLabel()
         
         let _maxX = CGRectGetMaxX(frame)
         let _maxY = CGRectGetMaxY(frame)
         
+//        let _max=15
         
-        map = createMap()
+//        map = Map.create(_max)
+//        
+//        // let _map:[Int]=[]
+//        var _x = player.xyz[0]
+//        var _y = player.xyz[1]
+//        var _z = player.xyz[2]
+//        
+//        let _fields = self.getFields(player.front, head: player.head, x: _x, y: _y, z: _z, map: map)
+//        refreshScreenFields(_fields)
+//        
+//        for _z in [1] {
+//            for _y in 0..<_max {
+//                for _x in 0..<_max {
+//                    let _field = getField(_x, y:_y, z:_z, map:map)
+//                    if _field.wall == false {
+//                        continue
+//                    }
+//                    
+//                    let _shape =  SKShapeNode(rect: CGRectMake(0, 0, 5, 5));
+//                    _shape.strokeColor = SKColor.blackColor()
+//                    _shape.fillColor=SKColor.blackColor()
+//                    _shape.position = CGPointMake(CGFloat(_x*5+100), CGFloat(_y*5+100*_z))
+//                    _shape.name = "w" + "\(_x+_y*_max)"
+//                    _shape.zPosition = 1000
+//                    self.addChild(_shape)
+//                }
+//            }
+//        }
+//        
+//        
+//        // TEST
+//        refreshScreenMiniMap(player.front, head:.C, map: map)
         
-        // let _map:[Int]=[]
-        var _x = player.xyz[0]
-        var _y = player.xyz[1]
-        var _z = player.xyz[2]
+    }
+    
+    func createMiniMap(map:[Field], max:Int) {
         
-        let _fields = self.getFields(player.front, head: player.head, x: _x, y: _y, z: _z, map: map)
-        refreshScreenFields(_fields)
+        self.enumerateChildNodesWithName("wall") {
+            node, stop in
+            node.removeFromParent()
+        }
         
-        let _max=15
         for _z in [1] {
-            for _y in 0..<_max {
-                for _x in 0..<_max {
-                    let _field = getField(_x, y:_y, z:_z, map:map)
+            for _y in 0..<max {
+                for _x in 0..<max {
+                    let _field = map[_x + _y * max + _z * max * max]
                     if _field.wall == false {
                         continue
                     }
@@ -139,16 +180,13 @@ class GameScene: SKScene {
                     _shape.strokeColor = SKColor.blackColor()
                     _shape.fillColor=SKColor.blackColor()
                     _shape.position = CGPointMake(CGFloat(_x*5+100), CGFloat(_y*5+100*_z))
-                    _shape.name = "w" + "\(_x+_y*_max)"
+                    _shape.name = "wall"
                     _shape.zPosition = 1000
                     self.addChild(_shape)
                 }
             }
         }
-        
-        
-        // TEST
-        refreshScreenMiniMap(player.front, head:.C, map: map)
+
         
     }
     
@@ -214,103 +252,7 @@ class GameScene: SKScene {
         return map[_n]
     }
     
-    func createMap()->[Field] {
-        
-        var _nowall:[String]=[]
-        //
-        let _max = 15
-        var _x = 1
-        var _y = 1
-        var _z = 1
-        
-        var _map:[Field]=[Field](count: _max*_max*_max, repeatedValue: Field())
-        var _roads:[Int]=[]
-        
-        var _xx = 0
-        var _yy = 0
-        var _zz = 0
-        
-        let _vecs=[[1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]]
-        var _v=0
-        var _key = ""
-        
-        
-        _map[_x+_y*_max+_z*_max*_max].wall = false
-        
-        while(true) {
-            while(true) {
-                var _flg=false
-                _v = Int(arc4random_uniform(UInt32(_vecs.count)))
-                for i in 0..<_vecs.count {
-                    
-                    _xx = _vecs[(_v+i) % 6][0]
-                    _yy = _vecs[(_v+i) % 6][1]
-                    _zz = _vecs[(_v+i) % 6][2]
-                    
-                    if ((!(_xx < 0 && _x < 3)) &&  (!(_xx > 0 && _x > (_max-4)))
-                        && (!(_yy < 0 && _y < 3)) && (!(_yy > 0 && _y > (_max-4)))
-                        && (!(_zz < 0 && _z < 3)) && (!(_zz > 0 && _z > (_max-4)))
-                        ) {
-                            
-                            println("hit _x:\(_x) _y:\(_y) _z:\(_z) _xx:\(_xx) _yy:\(_yy) _zz:\(_zz)")
-                            
-                            var _n = _map[(_x+_xx*2)+(_y+_yy*2)*_max+(_z+_zz*2)*_max*_max]
-                            // var _key1 = "w\(_x+_xx*2+(_y+_yy*2)*_max)"
-                            //                    var _key2 = "w\(_x+_xx*1+(_y+_yy*1)*16)"
-                            if _n.wall == true {
-                                _flg=true
-                                break
-                            }
-                    }
-                    
-                }
-                
-                
-                if (_flg) {
-                    
-                    var _xyz = 0
-                    
-                    _x += _xx
-                    _y += _yy
-                    _z += _zz
-                    
-                    println("x:\(_x) y:\(_y) z:\(_z)")
-                    
-                    _xyz = _x + (_y * _max) + (_z * _max * _max)
-                    _map[_xyz].wall = false
-                    
-                    _x += _xx
-                    _y += _yy
-                    _z += _zz
-                    println("x:\(_x) y:\(_y) z:\(_z)")
-                    _map[_x+(_y*_max)+(_z * _max*_max)].wall = false
-                    _roads += [_x+_y * _max + _z*_max*_max]
-                    continue
-                }
-                
-                break
-            }
-            
-            if _roads.count == 0 {
-                break
-            }
-            
-            var _road = _roads[0]
-            _roads.removeAtIndex(0)
-            
-            // x,y,z
-            _x = _road % _max
-            _y = ((_road - _x) % (_max*_max)) / _max
-            _z = (_road - _x - _y * _max) / (_max*_max)
-            
-            println("road:\(_road) x:\(_x) y:\(_y) z:\(_z)")
-            
-        }
-        
-        return _map
-    }
     
-     
     func getDirection(xyz:[Int])->Direction {
         let _directions:[Direction] = [.N, .S, .E, .W, .C, .F]
         for _d in _directions {
