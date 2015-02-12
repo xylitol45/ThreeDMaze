@@ -17,6 +17,8 @@
 		07A759EB1A81040E00914243 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07A759EA1A81040E00914243 /* Images.xcassets */; };
 		07A759EE1A81040E00914243 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 07A759EC1A81040E00914243 /* LaunchScreen.xib */; };
 		07A759FA1A81040E00914243 /* ThreeDMazeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07A759F91A81040E00914243 /* ThreeDMazeTests.swift */; };
+		07E39AE21A8CEDED00279A1E /* Game2ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07E39AE11A8CEDED00279A1E /* Game2ViewController.swift */; };
+		07E39AE41A8CEE1F00279A1E /* 100x100.png in Resources */ = {isa = PBXBuildFile; fileRef = 07E39AE31A8CEE1F00279A1E /* 100x100.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,6 +46,8 @@
 		07A759F31A81040E00914243 /* ThreeDMazeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ThreeDMazeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		07A759F81A81040E00914243 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		07A759F91A81040E00914243 /* ThreeDMazeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreeDMazeTests.swift; sourceTree = "<group>"; };
+		07E39AE11A8CEDED00279A1E /* Game2ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Game2ViewController.swift; sourceTree = "<group>"; };
+		07E39AE31A8CEE1F00279A1E /* 100x100.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 100x100.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,6 +99,8 @@
 				07A759EA1A81040E00914243 /* Images.xcassets */,
 				07A759EC1A81040E00914243 /* LaunchScreen.xib */,
 				07A759DD1A81040E00914243 /* Supporting Files */,
+				07E39AE11A8CEDED00279A1E /* Game2ViewController.swift */,
+				07E39AE31A8CEE1F00279A1E /* 100x100.png */,
 			);
 			path = ThreeDMaze;
 			sourceTree = "<group>";
@@ -204,6 +210,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				07E39AE41A8CEE1F00279A1E /* 100x100.png in Resources */,
 				07A759EE1A81040E00914243 /* LaunchScreen.xib in Resources */,
 				07A759EB1A81040E00914243 /* Images.xcassets in Resources */,
 				07A759E91A81040E00914243 /* Main.storyboard in Resources */,
@@ -230,6 +237,7 @@
 				07A759E01A81040E00914243 /* AppDelegate.swift in Sources */,
 				0776CF2B1A8B6F7000EDF73E /* Direction.swift in Sources */,
 				0776CF2D1A8B6F7000EDF73E /* Rotation.swift in Sources */,
+				07E39AE21A8CEDED00279A1E /* Game2ViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
