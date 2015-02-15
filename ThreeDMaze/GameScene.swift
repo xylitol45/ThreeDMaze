@@ -11,16 +11,16 @@
 import SpriteKit
 import SceneKit
 
-protocol GameSceneDelegate{
-    func getCameraNode()->SCNNode
-
-    func setCameraRotateAndPosition(front:Direction, head:Direction, x:Int, y:Int, z:Int)
-
-}
+//protocol GameSceneDelegate{
+//    func getCameraNode()->SCNNode
+//    func setCameraRotateAndPosition(front:Direction, head:Direction, x:Int, y:Int, z:Int)
+//}
 
 class GameScene: SKScene {
     
-    var gameSceneDelegate:GameSceneDelegate! = nil
+//    var gameSceneDelegate:GameSceneDelegate! = nil
+    
+    var game2ViewController:Game2ViewController! = nil
     
     var contentCreated = false
     
@@ -42,6 +42,8 @@ class GameScene: SKScene {
             return
         }
         
+        let _player = game2ViewController.player
+        
         let _touch: AnyObject = touches.anyObject()!
         let _location = _touch.locationInNode(self)
         if let _node:SKNode = self.nodeAtPoint(_location) as SKNode!{
@@ -57,51 +59,53 @@ class GameScene: SKScene {
                 default:break;
                 }
                 if _rotation != nil {
-                    let _res = player.front.rotate(player.head, rotation:_rotation!)
-                    player.front = _res[0];
-                    player.head = _res[1];
+                    let _res = _player.front.rotate(_player.head, rotation:_rotation!)
+                    _player.front = _res[0];
+                    _player.head = _res[1];
                 }
             } else if _name == "rotate" {
                 
-                player.head = player.head.right(player.front.opposite())
+                _player.head = _player.head.right(_player.front.opposite())
                 
             } else if _name == "debug" {
-                var _xyz = player.front.xyz()
-                _xyz = [player.xyz[0]+_xyz[0], player.xyz[1]+_xyz[1], player.xyz[2]+_xyz[2]]
+                var _xyz = _player.front.xyz()
+                _xyz = [_player.x+_xyz[0], _player.y+_xyz[1], _player.z+_xyz[2]]
                 let _frontField = getField(_xyz[0], y: _xyz[1], z:_xyz[2] , map: map)
                 if _frontField.wall == false {
-                    player.xyz = _xyz
-                    
+                    _player.x += _xyz[0]
+                    _player.y += _xyz[1]
+                    _player.z += _xyz[2]
                 }
-                
             }
         }
         
         
-        let _fields = getFields(player.front, head: player.head, x: player.xyz[0], y: player.xyz[1], z: player.xyz[2], map: map)
-        refreshScreenFields(_fields)
+//        let _fields = getFields(player.front, head: player.head, x: player.xyz[0], y: player.xyz[1], z: player.xyz[2], map: map)
+//        refreshScreenFields(_fields)
+  
+        game2ViewController.refreshCameraRotateAndPosition()
         
-        refreshScreenMiniMap(player.front, head: player.head, map: map)
+        // refreshScreenMiniMap(_player.front, head: _player.head, map: map)
         
         if let _node:SKLabelNode = childNodeWithName("debug") as SKLabelNode! {
-            _node.text = "FRONT:\(player.front.toString()) HEAD:\(player.head.toString())"
-                + "(\(player.xyz[0]),\(player.xyz[1]),\(player.xyz[2]))"
+            _node.text = "FRONT:\(_player.front.toString()) HEAD:\(_player.head.toString())"
+                + "(\(_player.x),\(_player.y),\(_player.z))"
         }
         
         if let _node:SKLabelNode = childNodeWithName("up") as SKLabelNode! {
-            let _xyz = player.front.calcXyz(player.head, x: player.xyz[0], y: player.xyz[1], z: player.xyz[2], xx:0, yy:0, zz:1);
+            let _xyz = _player.front.calcXyz(_player.head, x: _player.x, y: _player.y, z: _player.z, xx:0, yy:0, zz:1);
             _node.text = "UP(\(_xyz[0]),\(_xyz[1]),\(_xyz[2]))";
         }
         if let _node:SKLabelNode = childNodeWithName("down") as SKLabelNode! {
-            let _xyz = player.front.calcXyz(player.head, x: player.xyz[0], y: player.xyz[1], z: player.xyz[2], xx:0, yy:0, zz:-1);
+            let _xyz = _player.front.calcXyz(_player.head, x: _player.x, y: _player.y, z: _player.z, xx:0, yy:0, zz:-1);
             _node.text = "DOWN(\(_xyz[0]),\(_xyz[1]),\(_xyz[2]))";
         }
         if let _node:SKLabelNode = childNodeWithName("right") as SKLabelNode! {
-            let _xyz = player.front.calcXyz(player.head, x: player.xyz[0], y: player.xyz[1], z: player.xyz[2], xx:1, yy:0, zz:0)
+            let _xyz = _player.front.calcXyz(_player.head, x: _player.x, y: _player.y, z: _player.z, xx:1, yy:0, zz:0)
             _node.text = "RIGHT(\(_xyz[0]),\(_xyz[1]),\(_xyz[2]))";
         }
         if let _node:SKLabelNode = childNodeWithName("left") as SKLabelNode! {
-            let _xyz = player.front.calcXyz(player.head, x: player.xyz[0], y: player.xyz[1], z: player.xyz[2], xx:-1, yy:0, zz:0)
+            let _xyz = _player.front.calcXyz(_player.head, x: _player.x, y: _player.y, z: _player.z, xx:-1, yy:0, zz:0)
             _node.text = "LEFT(\(_xyz[0]),\(_xyz[1]),\(_xyz[2]))";
         }
 
@@ -199,12 +203,14 @@ class GameScene: SKScene {
         
         _debugLabel.zPosition = _zPosition
         _debugLabel.name = "debug"
+        _debugLabel.fontColor = UIColor.redColor()
         self.addChild(_debugLabel)
         
         let _upLabel = SKLabelNode(text: "UP")
         _upLabel.position = CGPointMake(CGRectGetMidX(frame), CGRectGetMaxY(frame) - 20)
         _upLabel.zPosition = _zPosition
         _upLabel.fontSize = 15
+        _upLabel.fontColor = UIColor.redColor()
         _upLabel.name = "up"
         addChild(_upLabel)
         
@@ -212,6 +218,7 @@ class GameScene: SKScene {
         _downLabel.position = CGPointMake(CGRectGetMidX(frame), 20)
         _downLabel.zPosition = _zPosition
         _downLabel.fontSize = 15
+        _downLabel.fontColor = UIColor.redColor()
         _downLabel.name = "down"
         addChild(_downLabel)
         
@@ -219,6 +226,7 @@ class GameScene: SKScene {
         _leftLabel.position = CGPointMake(40, CGRectGetMidY(frame))
         _leftLabel.zPosition = _zPosition
         _leftLabel.fontSize = 15
+        _leftLabel.fontColor = UIColor.redColor()
         _leftLabel.name = "left"
         addChild(_leftLabel)
         
@@ -226,6 +234,7 @@ class GameScene: SKScene {
         _rightLabel.position = CGPointMake(CGRectGetMaxX(frame) - 40, CGRectGetMidY(frame))
         _rightLabel.zPosition = _zPosition
         _rightLabel.fontSize = 15
+        _rightLabel.fontColor = UIColor.redColor()
         _rightLabel.name = "right"
         addChild(_rightLabel)
         

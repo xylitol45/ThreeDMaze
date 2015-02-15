@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0767B6161A9082AE0076F696 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0767B6151A9082AE0076F696 /* Player.swift */; };
 		0776CF2B1A8B6F7000EDF73E /* Direction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0776CF281A8B6F7000EDF73E /* Direction.swift */; };
 		0776CF2C1A8B6F7000EDF73E /* Field.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0776CF291A8B6F7000EDF73E /* Field.swift */; };
 		0776CF2D1A8B6F7000EDF73E /* Rotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0776CF2A1A8B6F7000EDF73E /* Rotation.swift */; };
@@ -33,6 +34,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0767B6151A9082AE0076F696 /* Player.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Player.swift; path = ../Player.swift; sourceTree = "<group>"; };
 		0776CF281A8B6F7000EDF73E /* Direction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Direction.swift; sourceTree = "<group>"; };
 		0776CF291A8B6F7000EDF73E /* Field.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Field.swift; sourceTree = "<group>"; };
 		0776CF2A1A8B6F7000EDF73E /* Rotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Rotation.swift; sourceTree = "<group>"; };
@@ -104,6 +106,7 @@
 				07E39AE11A8CEDED00279A1E /* Game2ViewController.swift */,
 				07E39AE31A8CEE1F00279A1E /* 100x100.png */,
 				07E39AE51A8D0B1200279A1E /* Map.swift */,
+				0767B6151A9082AE0076F696 /* Player.swift */,
 			);
 			path = ThreeDMaze;
 			sourceTree = "<group>";
@@ -241,6 +244,7 @@
 				07A759E01A81040E00914243 /* AppDelegate.swift in Sources */,
 				0776CF2B1A8B6F7000EDF73E /* Direction.swift in Sources */,
 				0776CF2D1A8B6F7000EDF73E /* Rotation.swift in Sources */,
+				0767B6161A9082AE0076F696 /* Player.swift in Sources */,
 				07E39AE21A8CEDED00279A1E /* Game2ViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -12,14 +12,18 @@ class Map {
     
     class func create(max:Int)->[Field] {
         
-        var _nowall:[String]=[]
+        // var _nowall:[String]=[]
         //
         let _max = max
         var _x = 1
         var _y = 1
         var _z = 1
         
-        var _map:[Field]=[Field](count: _max*_max*_max, repeatedValue: Field())
+        var _map:[Field]=[Field]()
+        
+        for _ in 0..<_max*_max*_max {
+            _map += [Field()]
+        }
         var _roads:[Int]=[]
         
         var _xx = 0
@@ -30,7 +34,17 @@ class Map {
         var _v=0
         var _key = ""
         
+//        for _f in _map {
+//            println(_f.wall ? "ttt" : "fff")
+//        }
+
+        
         _map[_x+_y*_max+_z*_max*_max].wall = false
+        
+//        for _f in _map {
+//            println(_f.wall ? "ttt" : "fff")
+//        }
+        
         
         while(true) {
             while(true) {
@@ -47,15 +61,15 @@ class Map {
                         && (!(_zz < 0 && _z < 3)) && (!(_zz > 0 && _z > (_max-4)))
                         ) {
                             
-                            println("hit _x:\(_x) _y:\(_y) _z:\(_z) _xx:\(_xx) _yy:\(_yy) _zz:\(_zz)")
+                        println("hit _x:\(_x) _y:\(_y) _z:\(_z) _xx:\(_xx) _yy:\(_yy) _zz:\(_zz)")
                             
-                            var _n = _map[(_x+_xx*2)+(_y+_yy*2)*_max+(_z+_zz*2)*_max*_max]
+                        var _n = _map[(_x+_xx*2)+(_y+_yy*2)*_max+(_z+_zz*2)*_max*_max]
                             // var _key1 = "w\(_x+_xx*2+(_y+_yy*2)*_max)"
                             //                    var _key2 = "w\(_x+_xx*1+(_y+_yy*1)*16)"
-                            if _n.wall == true {
-                                _flg=true
-                                break
-                            }
+                        if _n.wall == true {
+                            _flg=true
+                            break
+                        }
                     }
                     
                 }
@@ -101,9 +115,7 @@ class Map {
             println("road:\(_road) x:\(_x) y:\(_y) z:\(_z)")
             
         }
-        
+
         return _map
-        
-        
     }
 }

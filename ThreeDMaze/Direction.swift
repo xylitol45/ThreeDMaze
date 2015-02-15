@@ -148,7 +148,22 @@ enum Direction {
             return [0,0,1];
         case .F:
             return [0,0,-1];
+        default:
+            return [0,0,0];
         }
+    }
+    
+    func x()->Int {
+        let _xyz = self.xyz()
+        return _xyz[0]
+    }
+    func y()->Int {
+        let _xyz = self.xyz()
+        return _xyz[1]
+    }
+    func z()->Int {
+        let _xyz = self.xyz()
+        return _xyz[2]
     }
     
     func calcXyz(head:Direction, x:Int, y:Int, z:Int, xx:Int, yy:Int, zz:Int)->[Int] {

@@ -8,7 +8,9 @@
 
 import Foundation
 
-struct Field {
+class Field {
     var wall = true
+    init() {
+    }
 }
     
