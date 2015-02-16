@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0767B6161A9082AE0076F696 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0767B6151A9082AE0076F696 /* Player.swift */; };
 		0776CF2B1A8B6F7000EDF73E /* Direction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0776CF281A8B6F7000EDF73E /* Direction.swift */; };
 		0776CF2C1A8B6F7000EDF73E /* Field.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0776CF291A8B6F7000EDF73E /* Field.swift */; };
 		0776CF2D1A8B6F7000EDF73E /* Rotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0776CF2A1A8B6F7000EDF73E /* Rotation.swift */; };
@@ -18,6 +17,7 @@
 		07A759EB1A81040E00914243 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07A759EA1A81040E00914243 /* Images.xcassets */; };
 		07A759EE1A81040E00914243 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 07A759EC1A81040E00914243 /* LaunchScreen.xib */; };
 		07A759FA1A81040E00914243 /* ThreeDMazeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07A759F91A81040E00914243 /* ThreeDMazeTests.swift */; };
+		07A799321A92601B00A5F96F /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07A799311A92601B00A5F96F /* Player.swift */; };
 		07E39AE21A8CEDED00279A1E /* Game2ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07E39AE11A8CEDED00279A1E /* Game2ViewController.swift */; };
 		07E39AE41A8CEE1F00279A1E /* 100x100.png in Resources */ = {isa = PBXBuildFile; fileRef = 07E39AE31A8CEE1F00279A1E /* 100x100.png */; };
 		07E39AE61A8D0B1200279A1E /* Map.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07E39AE51A8D0B1200279A1E /* Map.swift */; };
@@ -40,7 +40,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		0767B6151A9082AE0076F696 /* Player.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Player.swift; path = ../Player.swift; sourceTree = "<group>"; };
 		0776CF281A8B6F7000EDF73E /* Direction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Direction.swift; sourceTree = "<group>"; };
 		0776CF291A8B6F7000EDF73E /* Field.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Field.swift; sourceTree = "<group>"; };
 		0776CF2A1A8B6F7000EDF73E /* Rotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Rotation.swift; sourceTree = "<group>"; };
@@ -55,6 +54,7 @@
 		07A759F31A81040E00914243 /* ThreeDMazeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ThreeDMazeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		07A759F81A81040E00914243 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		07A759F91A81040E00914243 /* ThreeDMazeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreeDMazeTests.swift; sourceTree = "<group>"; };
+		07A799311A92601B00A5F96F /* Player.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
 		07E39AE11A8CEDED00279A1E /* Game2ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Game2ViewController.swift; sourceTree = "<group>"; };
 		07E39AE31A8CEE1F00279A1E /* 100x100.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 100x100.png; sourceTree = "<group>"; };
 		07E39AE51A8D0B1200279A1E /* Map.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Map.swift; sourceTree = "<group>"; };
@@ -124,7 +124,7 @@
 				26DF58A01A91FE730098340A /* 100x100_5.png */,
 				26DF58A11A91FE730098340A /* 100x100_6.png */,
 				07E39AE51A8D0B1200279A1E /* Map.swift */,
-				0767B6151A9082AE0076F696 /* Player.swift */,
+				07A799311A92601B00A5F96F /* Player.swift */,
 			);
 			path = ThreeDMaze;
 			sourceTree = "<group>";
@@ -268,7 +268,7 @@
 				07A759E01A81040E00914243 /* AppDelegate.swift in Sources */,
 				0776CF2B1A8B6F7000EDF73E /* Direction.swift in Sources */,
 				0776CF2D1A8B6F7000EDF73E /* Rotation.swift in Sources */,
-				0767B6161A9082AE0076F696 /* Player.swift in Sources */,
+				07A799321A92601B00A5F96F /* Player.swift in Sources */,
 				07E39AE21A8CEDED00279A1E /* Game2ViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
