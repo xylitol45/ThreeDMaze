@@ -42,12 +42,43 @@ class GameScene: SKScene {
             return
         }
         
+        // return
+        
         let _player = game2ViewController.player
         
         let _touch: AnyObject = touches.anyObject()!
         let _location = _touch.locationInNode(self)
         if let _node:SKNode = self.nodeAtPoint(_location) as SKNode!{
             var _name:String = ((_node.name == nil) ? "" : _node.name!)
+  
+            if _name == "rotatex" || _name == "rotatey" || _name == "rotatez" {
+                
+                let _labelNode = _node as SKLabelNode
+                
+                switch _name {
+                case "rotatex":
+                    game2ViewController.rotateX = (game2ViewController.rotateX + 1) % 4
+                    _labelNode.text = "ROTATEX\(game2ViewController.rotateX)"
+                case "rotatey":
+                    game2ViewController.rotateY = (game2ViewController.rotateY + 1) % 4
+                    _labelNode.text = "ROTATEY\(game2ViewController.rotateY)"
+                case "rotatez":
+                    game2ViewController.rotateZ = (game2ViewController.rotateZ + 1) % 4
+                    _labelNode.text = "ROTATEZ\(game2ViewController.rotateZ)"
+                default:break;
+                }
+                
+//                game2ViewController.boxNode!.rotation =
+//                    SCNVector4(x: game2ViewController.rotateX , y: game2ViewController.rotateY, z: game2ViewController.rotateZ, w: Float(M_PI))
+
+                let _n = Float(M_PI_2)
+                
+                game2ViewController.cameraNode!.eulerAngles =
+                SCNVector3(x: game2ViewController.rotateX * _n, y:game2ViewController.rotateY * _n, z:game2ViewController.rotateZ * _n)
+                return
+            }
+            
+                
             
             if _name == "right" || _name == "left" || _name == "up" || _name == "down" {
                 var _rotation:Rotation? = nil
@@ -70,11 +101,11 @@ class GameScene: SKScene {
             } else if _name == "debug" {
                 var _xyz = _player.front.xyz()
                 _xyz = [_player.x+_xyz[0], _player.y+_xyz[1], _player.z+_xyz[2]]
-                let _frontField = getField(_xyz[0], y: _xyz[1], z:_xyz[2] , map: map)
+                let _frontField = getField(_xyz[0], y: _xyz[1], z:_xyz[2] , map:  game2ViewController.map)
                 if _frontField.wall == false {
-                    _player.x += _xyz[0]
-                    _player.y += _xyz[1]
-                    _player.z += _xyz[2]
+                    _player.x = _xyz[0]
+                    _player.y = _xyz[1]
+                    _player.z = _xyz[2]
                 }
             }
         }
@@ -242,8 +273,34 @@ class GameScene: SKScene {
         _rotateLabel.position = CGPointMake(CGRectGetMaxX(frame) * 0.75, CGRectGetMaxY(frame) * 0.25)
         _rotateLabel.zPosition = _zPosition
         _rotateLabel.fontSize = 15
+        _rotateLabel.fontColor = UIColor.redColor()
         _rotateLabel.name = "rotate"
         addChild(_rotateLabel)
+        
+        let _rotateXLabel = SKLabelNode(text: "ROTATEX")
+        _rotateXLabel.position = CGPointMake(CGRectGetMaxX(frame) * 0.25, CGRectGetMaxY(frame) * 0.25 )
+        _rotateXLabel.zPosition = _zPosition
+        _rotateXLabel.fontSize = 15
+        _rotateXLabel.fontColor = UIColor.redColor()
+        _rotateXLabel.name = "rotatex"
+        addChild(_rotateXLabel)
+
+        let _rotateYLabel = SKLabelNode(text: "ROTATEY")
+        _rotateYLabel.position = CGPointMake(CGRectGetMaxX(frame) * 0.25, CGRectGetMaxY(frame) * 0.25 - 20 )
+        _rotateYLabel.zPosition = _zPosition
+        _rotateYLabel.fontSize = 15
+        _rotateYLabel.fontColor = UIColor.redColor()
+        _rotateYLabel.name = "rotatey"
+        addChild(_rotateYLabel)
+        
+        let _rotateZLabel = SKLabelNode(text: "ROTATEZ")
+        _rotateZLabel.position = CGPointMake(CGRectGetMaxX(frame) * 0.25, CGRectGetMaxY(frame) * 0.25 - 40)
+        _rotateZLabel.zPosition = _zPosition
+        _rotateZLabel.fontSize = 15
+        _rotateZLabel.fontColor = UIColor.redColor()
+        _rotateZLabel.name = "rotatez"
+        addChild(_rotateZLabel)
+        
         
     }
     
