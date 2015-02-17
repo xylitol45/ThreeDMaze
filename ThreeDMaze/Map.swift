@@ -118,4 +118,19 @@ class Map {
 
         return _map
     }
+    
+    class func getField(x:Int, y:Int, z:Int, map:[Field], max:Int)->Field {
+        
+        if (x < 0 || x >= max || y < 0 || y >= max || z < 0 || z >= max) {
+            return Field()
+        }
+        
+        let _n = x + y * max + z * max * max;
+        if ( _n < 0 || _n >= map.count) {
+            return Field()
+        }
+        return map[_n]
+    }
+    
+    
 }

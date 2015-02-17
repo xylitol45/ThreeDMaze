@@ -90,23 +90,20 @@ class GameScene: SKScene {
                 default:break;
                 }
                 if _rotation != nil {
-                    let _res = _player.front.rotate(_player.head, rotation:_rotation!)
-                    _player.front = _res[0];
-                    _player.head = _res[1];
+                    game2ViewController.rotateFront(_rotation!)
+//                    let _res = _player.front.rotate(_player.head, rotation:_rotation!)
+//                    _player.front = _res[0];
+//                    _player.head = _res[1];
                 }
             } else if _name == "rotate" {
                 
                 _player.head = _player.head.right(_player.front.opposite())
                 
             } else if _name == "debug" {
-                var _xyz = _player.front.xyz()
-                _xyz = [_player.x+_xyz[0], _player.y+_xyz[1], _player.z+_xyz[2]]
-                let _frontField = getField(_xyz[0], y: _xyz[1], z:_xyz[2] , map:  game2ViewController.map)
-                if _frontField.wall == false {
-                    _player.x = _xyz[0]
-                    _player.y = _xyz[1]
-                    _player.z = _xyz[2]
-                }
+                
+                game2ViewController.moveFront()
+                
+                
             }
         }
         
@@ -114,7 +111,6 @@ class GameScene: SKScene {
 //        let _fields = getFields(player.front, head: player.head, x: player.xyz[0], y: player.xyz[1], z: player.xyz[2], map: map)
 //        refreshScreenFields(_fields)
   
-        game2ViewController.refreshCameraRotateAndPosition()
         
         // refreshScreenMiniMap(_player.front, head: _player.head, map: map)
         

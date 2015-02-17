@@ -63,7 +63,7 @@ class Game2ViewController: UIViewController  {
         //        cameraNode!.rotation = SCNVector4(x: rotateX, y: rotateY, z: rotateZ, w: Float(M_PI) / 2)
         
         cameraNode!.eulerAngles = SCNVector3(x: Float(M_PI_2), y: 0, z: 0)
-
+        
         //cameraNode!.position = SCNVector3(x: 10, y:10, z: 10)
         //cameraNode!.eulerAngles = SCNVector3(x: 0, y: 0, z: 0)
         
@@ -84,13 +84,13 @@ class Game2ViewController: UIViewController  {
         _scene.rootNode.addChildNode(ambientLightNode)
         
         #if false
-                 createBox(10, y: 20, z: 10, no:1)
-                 createBox(10, y:  0, z: 10, no:2)
-                 createBox( 0, y: 10, z: 10, no:3) // 左
-                 createBox(20, y: 10, z: 10, no:4) // 右
-                 boxNode = createBox(10, y: 10, z:  0, no:5)
-                 createBox(10, y: 10, z: 20, no:6)
-            #endif
+            createBox(10, y: 20, z: 10, no:1)
+            createBox(10, y:  0, z: 10, no:2)
+            createBox( 0, y: 10, z: 10, no:3) // 左
+            createBox(20, y: 10, z: 10, no:4) // 右
+            boxNode = createBox(10, y: 10, z:  0, no:5)
+            createBox(10, y: 10, z: 20, no:6)
+        #endif
         
         for _z in 0..<_max  {
             for _y in 0..<_max {
@@ -212,7 +212,10 @@ class Game2ViewController: UIViewController  {
         if _vec  != nil {
             cameraNode!.eulerAngles = _vec!
         }
-        cameraNode!.position = SCNVector3(x:Float(player.x*2+_xx), y:Float(player.y*2+_yy), z:Float(player.z*2+_zz))
+        
+        //        moveToFront(Float(player.x*2+_xx), y:Float(player.y*2+_yy), z:Float(player.z*2+_zz))
+        
+        //cameraNode!.position = SCNVector3(x:Float(player.x*2+_xx), y:Float(player.y*2+_yy), z:Float(player.z*2+_zz))
         
         //        println("rotate x:\(cameraNode!.rotation.x) y:\(cameraNode!.rotation.y) z:\(cameraNode!.rotation.z)")
     }
@@ -238,6 +241,100 @@ class Game2ViewController: UIViewController  {
         }
         
         return nil
+    }
+    
+    func moveFront() {
+        
+        var _xyz = player.front.xyz()
+        _xyz = [player.x+_xyz[0], player.y+_xyz[1], player.z+_xyz[2]]
+        let _frontField = Map.getField(_xyz[0], y: _xyz[1], z:_xyz[2] , map:map, max:15)
+        if _frontField.wall == true {
+            return
+        }
+        
+        player.x = _xyz[0]
+        player.y = _xyz[1]
+        player.z = _xyz[2]
+        
+        
+        // 実際の座標に対し、少し引く
+        var _xx:Float=0, _yy:Float=0, _zz:Float=0
+        switch(player.front) {
+        case .N: _yy = -1;
+        case .S: _yy = 1;
+        case .E: _xx = -1;
+        case .W: _xx = 1;
+        case .C: _zz = -1;
+        case .F: _zz = 1;
+        default: break;
+        }
+        
+        let _action =
+            SCNAction.moveTo(SCNVector3(x:Float(player.x*2)+_xx,y:Float(player.y*2)+_yy,z:Float(player.z*2)+_zz),
+                duration: 0.2)
+        
+        cameraNode!.runAction(_action)
+        
+        return
+    }
+    
+    func rotateFront(rotation:Rotation) {
+        
+        
+        var _xAngle:CGFloat=0, _yAngle:CGFloat=0, _zAngle:CGFloat=0
+        
+        if rotation == .UP || rotation == .DOWN {
+            let _right = player.front.right(player.head)
+            let _n:CGFloat = (rotation == .UP) ? 1 : -1
+            
+            switch(_right) {
+            case .N: _xAngle  = CGFloat(M_PI_2) * _n *  1
+            case .S: _xAngle  = CGFloat(M_PI_2) * _n *  1
+            case .E: _xAngle  = CGFloat(M_PI_2) * _n *  1
+            case .W: _xAngle  = CGFloat(M_PI_2) * _n *  1
+            case .C: _zAngle  = CGFloat(M_PI_2) * _n * -1
+            case .F: _zAngle  = CGFloat(M_PI_2) * _n
+            default:return;
+            }
+        } else if rotation == .RIGHT || rotation == .LEFT {
+            let _n:CGFloat = (rotation == .RIGHT) ? 1: -1
+            switch(player.head) {
+            case .N: _yAngle  = CGFloat(M_PI_2) * _n * -1
+            case .S: _yAngle  = CGFloat(M_PI_2) * _n *  1
+            case .E: _yAngle  = CGFloat(M_PI_2) * _n * -1
+            case .W: _yAngle  = CGFloat(M_PI_2) * _n * -1
+            case .C: _zAngle  = CGFloat(M_PI_2) * _n * -1
+            case .F: _zAngle  = CGFloat(M_PI_2) * _n *  1
+            default:return;
+            }
+        } else {
+            return
+        }
+        
+        let _rotateAction = SCNAction.rotateByX( _xAngle, y: _yAngle, z: _zAngle, duration: 0.5)
+        
+        let _newFrontAndHead = player.front.rotate(player.head, rotation:rotation)
+        player.front = _newFrontAndHead[0]
+        player.head = _newFrontAndHead[1]
+        
+        
+        // 実際の座標に対し、少し引く
+        var _xx:Float = 0, _yy:Float = 0, _zz:Float = 0
+        switch(player.front) {
+        case .N: _yy = -1;
+        case .S: _yy = 1;
+        case .E: _xx = -1;
+        case .W: _xx = 1;
+        case .C: _zz = -1;
+        case .F: _zz = 1;
+        default: break;
+        }
+        
+        let _moveAction = SCNAction.moveTo(
+            SCNVector3(x:Float(player.x*2) + _xx, y:Float(player.y*2) + _yy, z:Float(player.z*2) + _zz), duration: 0.2)
+        
+        cameraNode!.runAction(SCNAction.group([_rotateAction, _moveAction]))
+        
     }
     
     func handleTap(gestureRecognize: UIGestureRecognizer) {
