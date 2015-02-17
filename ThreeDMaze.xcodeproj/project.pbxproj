@@ -84,6 +84,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		071301C21A93AEDC009DF9AF /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				07E39AE31A8CEE1F00279A1E /* 100x100.png */,
+				26DF589C1A91FE730098340A /* 100x100_1.png */,
+				26DF589D1A91FE730098340A /* 100x100_2.png */,
+				26DF589E1A91FE730098340A /* 100x100_3.png */,
+				26DF589F1A91FE730098340A /* 100x100_4.png */,
+				26DF58A01A91FE730098340A /* 100x100_5.png */,
+				26DF58A11A91FE730098340A /* 100x100_6.png */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
 		07A759D11A81040E00914243 = {
 			isa = PBXGroup;
 			children = (
@@ -105,26 +119,20 @@
 		07A759DC1A81040E00914243 /* ThreeDMaze */ = {
 			isa = PBXGroup;
 			children = (
+				071301C21A93AEDC009DF9AF /* Resources */,
 				07A759DF1A81040E00914243 /* AppDelegate.swift */,
 				07A759E31A81040E00914243 /* GameScene.swift */,
 				07A759E51A81040E00914243 /* GameViewController.swift */,
 				0776CF281A8B6F7000EDF73E /* Direction.swift */,
 				0776CF291A8B6F7000EDF73E /* Field.swift */,
 				0776CF2A1A8B6F7000EDF73E /* Rotation.swift */,
+				07E39AE51A8D0B1200279A1E /* Map.swift */,
+				07A799311A92601B00A5F96F /* Player.swift */,
+				07E39AE11A8CEDED00279A1E /* Game2ViewController.swift */,
 				07A759E71A81040E00914243 /* Main.storyboard */,
 				07A759EA1A81040E00914243 /* Images.xcassets */,
 				07A759EC1A81040E00914243 /* LaunchScreen.xib */,
 				07A759DD1A81040E00914243 /* Supporting Files */,
-				07E39AE11A8CEDED00279A1E /* Game2ViewController.swift */,
-				07E39AE31A8CEE1F00279A1E /* 100x100.png */,
-				26DF589C1A91FE730098340A /* 100x100_1.png */,
-				26DF589D1A91FE730098340A /* 100x100_2.png */,
-				26DF589E1A91FE730098340A /* 100x100_3.png */,
-				26DF589F1A91FE730098340A /* 100x100_4.png */,
-				26DF58A01A91FE730098340A /* 100x100_5.png */,
-				26DF58A11A91FE730098340A /* 100x100_6.png */,
-				07E39AE51A8D0B1200279A1E /* Map.swift */,
-				07A799311A92601B00A5F96F /* Player.swift */,
 			);
 			path = ThreeDMaze;
 			sourceTree = "<group>";
