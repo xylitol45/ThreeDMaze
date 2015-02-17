@@ -27,8 +27,6 @@ class Game2ViewController: UIViewController  {
         return cameraNode!
     }
     
-    
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
