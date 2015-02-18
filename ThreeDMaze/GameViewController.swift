@@ -249,8 +249,8 @@ class GameViewController: UIViewController  {
 //            let _material2 = SCNMaterial()
 //            _material2.diffuse.contents = UIColor.blueColor()
             
-            let _cloneNode = baseBoxNode!.clone() as SCNNode
-//            let _cloneNode = baseBoxNode!.flattenedClone()
+            //let _cloneNode = baseBoxNode!.clone() as SCNNode
+            let _cloneNode = baseBoxNode!.flattenedClone()
             
             _cloneNode.position = SCNVector3(x: x,  y: y, z: z)
             _scene.rootNode.addChildNode(_cloneNode)
