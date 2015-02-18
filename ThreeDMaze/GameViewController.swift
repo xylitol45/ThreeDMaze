@@ -93,10 +93,11 @@ class GameViewController: UIViewController  {
                     
                     let _field = map[_x + _y * _max + _z * _max * _max]
                     if _field.wall == false {
+                        createCoin(Float(_x * 2), y: Float(_y * 2), z: Float(_z * 2), no: 0)
                         continue
                     }
                     
-                    createBox(Float(_x * 2), y: Float(_y * 2), z: Float(_z * 2), no: 5)
+                    createBox(Float(_x * 2), y: Float(_y * 2), z: Float(_z * 2), no: 3)
                     
 //                    let _box = SCNBox(width: 2, height: 2, length: 2, chamferRadius: 0)
 //                    
@@ -220,29 +221,86 @@ class GameViewController: UIViewController  {
         //        println("rotate x:\(cameraNode!.rotation.x) y:\(cameraNode!.rotation.y) z:\(cameraNode!.rotation.z)")
     }
     
+    var baseBoxNode:SCNNode? = nil
+    
     func createBox(x:Float, y:Float, z:Float, no:Int)->SCNNode? {
         
-        let _view = self.view as SCNView
-        if let _scene = _view.scene {
+        if baseBoxNode == nil {
             let _box = SCNBox(width: 2, height: 2, length: 2, chamferRadius: 0)
             
             let _material = SCNMaterial()
             _material.diffuse.contents = UIImage(named: "100x100_\(no).png")
             
-            let _material2 = SCNMaterial()
-            _material2.diffuse.contents = UIColor.blueColor()
             _box.firstMaterial = _material
             
-            let _boxNode = SCNNode(geometry: _box)
-            _boxNode.position = SCNVector3(x: x,  y: y, z: z)
-            _scene.rootNode.addChildNode(_boxNode)
+            baseBoxNode = SCNNode(geometry: _box)
             
-            return _boxNode
+        }
+        
+        
+//        _boxNode.position = SCNVector3(x: x,  y: y, z: z)
+//        _scene.rootNode.addChildNode(_boxNode)
+
+        let _view = self.view as SCNView
+        if let _scene = _view.scene {
+           // let _box = SCNBox(width: 2, height: 2, length: 2, chamferRadius: 0)
+            
+            
+//            let _material2 = SCNMaterial()
+//            _material2.diffuse.contents = UIColor.blueColor()
+            
+            let _cloneNode = baseBoxNode!.clone() as SCNNode
+//            let _cloneNode = baseBoxNode!.flattenedClone()
+            
+            _cloneNode.position = SCNVector3(x: x,  y: y, z: z)
+            _scene.rootNode.addChildNode(_cloneNode)
+            
+            return _cloneNode
         }
         
         return nil
     }
     
+    var baseCoinNode:SCNNode? = nil
+    
+    func createCoin(x:Float, y:Float, z:Float, no:Int)->SCNNode? {
+        
+        if baseCoinNode == nil {
+        
+        let _coin = SCNCylinder(radius: 0.5, height: 0.1)
+        
+        let _material = SCNMaterial()
+        _material.diffuse.contents = UIColor.yellowColor()
+        _coin.firstMaterial = _material
+        
+        baseCoinNode = SCNNode(geometry: _coin)
+        }
+        
+        let _view = self.view as SCNView
+        if let _scene = _view.scene {
+//            let _coin = SCNCylinder(radius: 0.5, height: 0.1)
+//            
+//            let _material = SCNMaterial()
+//            _material.diffuse.contents = UIColor.yellowColor()
+//            _coin.firstMaterial = _material
+//            
+//            let _coinNode = SCNNode(geometry: _coin)
+
+            let _cloneNode = baseCoinNode!.flattenedClone()
+            _cloneNode.position = SCNVector3(x: x,  y: y, z: z)
+            
+            let _action = SCNAction.rotateByAngle(CGFloat(M_PI * 2), aroundAxis: SCNVector3(x:0,y:0,z:1), duration: 5.0)
+            //_cloneNode.runAction(SCNAction.repeatActionForever(_action))
+            
+            _scene.rootNode.addChildNode(_cloneNode)
+            
+            return _cloneNode
+        }
+        
+        return nil
+    }
+    
+
     
     override func shouldAutorotate() -> Bool {
         return true
@@ -293,11 +351,13 @@ class GameViewController: UIViewController  {
         default: break;
         }
         
-        let _action =
-        SCNAction.moveTo(SCNVector3(x:Float(player.x*2)+_xx,y:Float(player.y*2)+_yy,z:Float(player.z*2)+_zz),
-            duration: 0.2)
+         let _action =
+         SCNAction.moveTo(SCNVector3(x:Float(player.x*2)+_xx,y:Float(player.y*2)+_yy,z:Float(player.z*2)+_zz),
+             duration: 0.01)
         
-        cameraNode!.runAction(_action)
+         cameraNode!.runAction(_action)
+
+//        cameraNode!.position = SCNVector3(x:Float(player.x*2)+_xx,y:Float(player.y*2)+_yy,z:Float(player.z*2)+_zz)
         
         return
     }
@@ -365,7 +425,7 @@ class GameViewController: UIViewController  {
         }
         #endif
         // let _rotateAction = SCNAction.rotateByX( _xAngle, y: _yAngle, z: _zAngle, duration: 0.5)
-        let _rotateAction = SCNAction.rotateByAngle(CGFloat(M_PI_2) * _n , aroundAxis: _vec!, duration: 0.5)
+        let _rotateAction = SCNAction.rotateByAngle(CGFloat(M_PI_2) * _n , aroundAxis: _vec!, duration: 0.1)
         
         let _newFrontAndHead = player.front.rotate(player.head, rotation:rotation)
         player.front = _newFrontAndHead[0]
@@ -385,7 +445,7 @@ class GameViewController: UIViewController  {
         }
         
         let _moveAction = SCNAction.moveTo(
-            SCNVector3(x:Float(player.x*2) + _xx, y:Float(player.y*2) + _yy, z:Float(player.z*2) + _zz), duration: 0.2)
+            SCNVector3(x:Float(player.x*2) + _xx, y:Float(player.y*2) + _yy, z:Float(player.z*2) + _zz), duration: 0.1)
         
 //        let _groupAction = SCNAction.group([_rotateAction, _moveAction])
 //        let _resetAction = SCNAction.runBlock { (node) -> Void in

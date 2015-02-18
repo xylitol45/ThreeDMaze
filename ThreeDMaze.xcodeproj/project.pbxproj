@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		070B6B671A94F26A00068C22 /* 100x100_0.png in Resources */ = {isa = PBXBuildFile; fileRef = 070B6B661A94F26A00068C22 /* 100x100_0.png */; };
 		0776CF2B1A8B6F7000EDF73E /* Direction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0776CF281A8B6F7000EDF73E /* Direction.swift */; };
 		0776CF2C1A8B6F7000EDF73E /* Field.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0776CF291A8B6F7000EDF73E /* Field.swift */; };
 		0776CF2D1A8B6F7000EDF73E /* Rotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0776CF2A1A8B6F7000EDF73E /* Rotation.swift */; };
@@ -39,6 +40,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		070B6B661A94F26A00068C22 /* 100x100_0.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 100x100_0.png; sourceTree = "<group>"; };
 		0776CF281A8B6F7000EDF73E /* Direction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Direction.swift; sourceTree = "<group>"; };
 		0776CF291A8B6F7000EDF73E /* Field.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Field.swift; sourceTree = "<group>"; };
 		0776CF2A1A8B6F7000EDF73E /* Rotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Rotation.swift; sourceTree = "<group>"; };
@@ -85,6 +87,7 @@
 		071301C21A93AEDC009DF9AF /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				070B6B661A94F26A00068C22 /* 100x100_0.png */,
 				07E39AE31A8CEE1F00279A1E /* 100x100.png */,
 				26DF589C1A91FE730098340A /* 100x100_1.png */,
 				26DF589D1A91FE730098340A /* 100x100_2.png */,
@@ -242,6 +245,7 @@
 				26DF58A71A91FE730098340A /* 100x100_6.png in Resources */,
 				07E39AE41A8CEE1F00279A1E /* 100x100.png in Resources */,
 				26DF58A51A91FE730098340A /* 100x100_4.png in Resources */,
+				070B6B671A94F26A00068C22 /* 100x100_0.png in Resources */,
 				07A759EE1A81040E00914243 /* LaunchScreen.xib in Resources */,
 				07A759EB1A81040E00914243 /* Images.xcassets in Resources */,
 				26DF58A41A91FE730098340A /* 100x100_3.png in Resources */,
