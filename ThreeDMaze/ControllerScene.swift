@@ -16,18 +16,18 @@ import SceneKit
 //    func setCameraRotateAndPosition(front:Direction, head:Direction, x:Int, y:Int, z:Int)
 //}
 
-class GameScene: SKScene {
+class ControllerScene: SKScene {
     
-//    var gameSceneDelegate:GameSceneDelegate! = nil
+    //    var gameSceneDelegate:GameSceneDelegate! = nil
     
-    var game2ViewController:Game2ViewController! = nil
+    var gameViewController:GameViewController! = nil
     
     var contentCreated = false
     
     var player = (front:Direction.N, head:Direction.C, xyz:[3,5,1])
-//    var playerFront = Direction.N
-//    var playerHead = Direction.C
-//    var playerXyz:[Int] = [3,5,1]
+    //    var playerFront = Direction.N
+    //    var playerHead = Direction.C
+    //    var playerXyz:[Int] = [3,5,1]
     var map:[Field] = []
     
     override func didMoveToView(view: SKView) {
@@ -44,36 +44,36 @@ class GameScene: SKScene {
         
         // return
         
-        let _player = game2ViewController.player
+        let _player = gameViewController.player
         
         let _touch: AnyObject = touches.anyObject()!
         let _location = _touch.locationInNode(self)
         if let _node:SKNode = self.nodeAtPoint(_location) as SKNode!{
             var _name:String = ((_node.name == nil) ? "" : _node.name!)
-  
-//            if _name == "rotatex" || _name == "rotatey" || _name == "rotatez" {
-//                
-//                let _labelNode = _node as SKLabelNode
-//                
-//                switch _name {
-//                case "rotatex":
-//                    game2ViewController.rotateX = (game2ViewController.rotateX + 1) % 4
-//                    _labelNode.text = "ROTATEX\(game2ViewController.rotateX)"
-//                case "rotatey":
-//                    game2ViewController.rotateY = (game2ViewController.rotateY + 1) % 4
-//                    _labelNode.text = "ROTATEY\(game2ViewController.rotateY)"
-//                case "rotatez":
-//                    game2ViewController.rotateZ = (game2ViewController.rotateZ + 1) % 4
-//                    _labelNode.text = "ROTATEZ\(game2ViewController.rotateZ)"
-//                default:break;
-//                }
-//                
-//                let _n = Float(M_PI_2)
-//                
-//                game2ViewController.cameraNode!.eulerAngles =
-//                SCNVector3(x: game2ViewController.rotateX * _n, y:game2ViewController.rotateY * _n, z:game2ViewController.rotateZ * _n)
-//                return
-//            }
+            
+            //            if _name == "rotatex" || _name == "rotatey" || _name == "rotatez" {
+            //
+            //                let _labelNode = _node as SKLabelNode
+            //
+            //                switch _name {
+            //                case "rotatex":
+            //                    game2ViewController.rotateX = (game2ViewController.rotateX + 1) % 4
+            //                    _labelNode.text = "ROTATEX\(game2ViewController.rotateX)"
+            //                case "rotatey":
+            //                    game2ViewController.rotateY = (game2ViewController.rotateY + 1) % 4
+            //                    _labelNode.text = "ROTATEY\(game2ViewController.rotateY)"
+            //                case "rotatez":
+            //                    game2ViewController.rotateZ = (game2ViewController.rotateZ + 1) % 4
+            //                    _labelNode.text = "ROTATEZ\(game2ViewController.rotateZ)"
+            //                default:break;
+            //                }
+            //
+            //                let _n = Float(M_PI_2)
+            //
+            //                game2ViewController.cameraNode!.eulerAngles =
+            //                SCNVector3(x: game2ViewController.rotateX * _n, y:game2ViewController.rotateY * _n, z:game2ViewController.rotateZ * _n)
+            //                return
+            //            }
             
             if _name == "right" || _name == "left" || _name == "up" || _name == "down" {
                 var _rotation:Rotation? = nil
@@ -85,18 +85,17 @@ class GameScene: SKScene {
                 default:break;
                 }
                 if _rotation != nil {
-                    game2ViewController.rotateFront(_rotation!)
+                    gameViewController.rotateFront(_rotation!)
                 } else {
                     return
                 }
-//            } else if _name == "rotate" {
-//                
-//                _player.head = _player.head.right(_player.front.opposite())
-//                
-            } else if _name == "debug" {
+                //            } else if _name == "rotate" {
+                //
+                //                _player.head = _player.head.right(_player.front.opposite())
+                //
+            } else if _name == "front" {
                 
-                game2ViewController.moveFront()
-                
+                gameViewController.moveFront()
                 
             } else {
                 return
@@ -106,7 +105,7 @@ class GameScene: SKScene {
         }
         
         
-        if let _node:SKLabelNode = childNodeWithName("debug") as SKLabelNode! {
+        if let _node:SKLabelNode = childNodeWithName("front") as SKLabelNode! {
             _node.text = "FRONT:\(_player.front.toString()) HEAD:\(_player.head.toString())"
                 + "(\(_player.x),\(_player.y),\(_player.z))"
         }
@@ -127,7 +126,8 @@ class GameScene: SKScene {
             let _xyz = _player.front.calcXyz(_player.head, x: _player.x, y: _player.y, z: _player.z, xx:-1, yy:0, zz:0)
             _node.text = "LEFT(\(_xyz[0]),\(_xyz[1]),\(_xyz[2]))";
         }
-
+        
+        createMiniMap(gameViewController.map, max: gameViewController.max, z: _player.z)
     }
     
     override func update(currentTime: CFTimeInterval) {
@@ -138,38 +138,45 @@ class GameScene: SKScene {
     
     // MARK: シーン作成
     func createContentScene() {
-
+        
         createLabel()
         
         
     }
     
-    func createMiniMap(map:[Field], max:Int) {
+    func createMiniMap(map:[Field], max:Int, z:Int) {
         
         self.enumerateChildNodesWithName("wall") {
             node, stop in
             node.removeFromParent()
         }
-        
-        for _z in [1] {
-            for _y in 0..<max {
-                for _x in 0..<max {
-                    let _field = map[_x + _y * max + _z * max * max]
-                    if _field.wall == false {
-                        continue
-                    }
-                    
-                    let _shape =  SKShapeNode(rect: CGRectMake(0, 0, 5, 5));
-                    _shape.strokeColor = SKColor.blackColor()
-                    _shape.fillColor=SKColor.blackColor()
-                    _shape.position = CGPointMake(CGFloat(_x*5+100), CGFloat(_y*5+100*_z))
-                    _shape.name = "wall"
-                    _shape.zPosition = 1000
-                    self.addChild(_shape)
+        for _y in 0..<max {
+            for _x in 0..<max {
+                let _field = map[_x + _y * max + z * max * max]
+                if _field.wall == false {
+                    continue
                 }
+                
+                let _shape =  SKShapeNode(rect: CGRectMake(0, 0, 5, 5));
+                _shape.strokeColor = SKColor.blackColor()
+                _shape.fillColor=SKColor.blackColor()
+                _shape.position = CGPointMake(CGFloat(_x*5+50), CGFloat(_y*5+50))
+                _shape.name = "wall"
+                _shape.zPosition = 1000
+                self.addChild(_shape)
             }
         }
 
+        var _x = gameViewController.player.x
+        var _y = gameViewController.player.y
+        
+        let _redShape =  SKShapeNode(rect: CGRectMake(0, 0, 5, 5));
+        _redShape.strokeColor = SKColor.blackColor()
+        _redShape.fillColor=SKColor.redColor()
+        _redShape.position = CGPointMake(CGFloat(_x*5+50), CGFloat(_y*5+50))
+        _redShape.name = "wall"
+        _redShape.zPosition = 1000
+        self.addChild(_redShape)
         
     }
     
@@ -181,7 +188,7 @@ class GameScene: SKScene {
         _debugLabel.fontSize = 20
         
         _debugLabel.zPosition = _zPosition
-        _debugLabel.name = "debug"
+        _debugLabel.name = "front"
         _debugLabel.fontColor = UIColor.redColor()
         self.addChild(_debugLabel)
         
@@ -217,54 +224,54 @@ class GameScene: SKScene {
         _rightLabel.name = "right"
         addChild(_rightLabel)
         
-//        let _rotateLabel = SKLabelNode(text: "ROTATE")
-//        _rotateLabel.position = CGPointMake(CGRectGetMaxX(frame) * 0.75, CGRectGetMaxY(frame) * 0.25)
-//        _rotateLabel.zPosition = _zPosition
-//        _rotateLabel.fontSize = 15
-//        _rotateLabel.fontColor = UIColor.redColor()
-//        _rotateLabel.name = "rotate"
-//        addChild(_rotateLabel)
-//        
-//        let _rotateXLabel = SKLabelNode(text: "ROTATEX")
-//        _rotateXLabel.position = CGPointMake(CGRectGetMaxX(frame) * 0.25, CGRectGetMaxY(frame) * 0.25 )
-//        _rotateXLabel.zPosition = _zPosition
-//        _rotateXLabel.fontSize = 15
-//        _rotateXLabel.fontColor = UIColor.redColor()
-//        _rotateXLabel.name = "rotatex"
-//        addChild(_rotateXLabel)
-//
-//        let _rotateYLabel = SKLabelNode(text: "ROTATEY")
-//        _rotateYLabel.position = CGPointMake(CGRectGetMaxX(frame) * 0.25, CGRectGetMaxY(frame) * 0.25 - 20 )
-//        _rotateYLabel.zPosition = _zPosition
-//        _rotateYLabel.fontSize = 15
-//        _rotateYLabel.fontColor = UIColor.redColor()
-//        _rotateYLabel.name = "rotatey"
-//        addChild(_rotateYLabel)
-//        
-//        let _rotateZLabel = SKLabelNode(text: "ROTATEZ")
-//        _rotateZLabel.position = CGPointMake(CGRectGetMaxX(frame) * 0.25, CGRectGetMaxY(frame) * 0.25 - 40)
-//        _rotateZLabel.zPosition = _zPosition
-//        _rotateZLabel.fontSize = 15
-//        _rotateZLabel.fontColor = UIColor.redColor()
-//        _rotateZLabel.name = "rotatez"
-//        addChild(_rotateZLabel)
-//        
+        //        let _rotateLabel = SKLabelNode(text: "ROTATE")
+        //        _rotateLabel.position = CGPointMake(CGRectGetMaxX(frame) * 0.75, CGRectGetMaxY(frame) * 0.25)
+        //        _rotateLabel.zPosition = _zPosition
+        //        _rotateLabel.fontSize = 15
+        //        _rotateLabel.fontColor = UIColor.redColor()
+        //        _rotateLabel.name = "rotate"
+        //        addChild(_rotateLabel)
+        //
+        //        let _rotateXLabel = SKLabelNode(text: "ROTATEX")
+        //        _rotateXLabel.position = CGPointMake(CGRectGetMaxX(frame) * 0.25, CGRectGetMaxY(frame) * 0.25 )
+        //        _rotateXLabel.zPosition = _zPosition
+        //        _rotateXLabel.fontSize = 15
+        //        _rotateXLabel.fontColor = UIColor.redColor()
+        //        _rotateXLabel.name = "rotatex"
+        //        addChild(_rotateXLabel)
+        //
+        //        let _rotateYLabel = SKLabelNode(text: "ROTATEY")
+        //        _rotateYLabel.position = CGPointMake(CGRectGetMaxX(frame) * 0.25, CGRectGetMaxY(frame) * 0.25 - 20 )
+        //        _rotateYLabel.zPosition = _zPosition
+        //        _rotateYLabel.fontSize = 15
+        //        _rotateYLabel.fontColor = UIColor.redColor()
+        //        _rotateYLabel.name = "rotatey"
+        //        addChild(_rotateYLabel)
+        //
+        //        let _rotateZLabel = SKLabelNode(text: "ROTATEZ")
+        //        _rotateZLabel.position = CGPointMake(CGRectGetMaxX(frame) * 0.25, CGRectGetMaxY(frame) * 0.25 - 40)
+        //        _rotateZLabel.zPosition = _zPosition
+        //        _rotateZLabel.fontSize = 15
+        //        _rotateZLabel.fontColor = UIColor.redColor()
+        //        _rotateZLabel.name = "rotatez"
+        //        addChild(_rotateZLabel)
+        //
         
     }
     
-//    func getField(x:Int, y:Int, z:Int, map:[Field])->Field {
-//        let _max = 15
-//        
-//        if (x < 0 || x >= _max || y < 0 || y >= _max || z < 0 || z >= _max) {
-//            return Field()
-//        }
-//        
-//        let _n = x + y * _max + z * _max * _max;
-//        if ( _n < 0 || _n >= map.count) {
-//            return Field()
-//        }
-//        return map[_n]
-//    }
+    //    func getField(x:Int, y:Int, z:Int, map:[Field])->Field {
+    //        let _max = 15
+    //
+    //        if (x < 0 || x >= _max || y < 0 || y >= _max || z < 0 || z >= _max) {
+    //            return Field()
+    //        }
+    //
+    //        let _n = x + y * _max + z * _max * _max;
+    //        if ( _n < 0 || _n >= map.count) {
+    //            return Field()
+    //        }
+    //        return map[_n]
+    //    }
     
     
     func getDirection(xyz:[Int])->Direction {
