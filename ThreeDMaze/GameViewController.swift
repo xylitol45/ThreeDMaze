@@ -21,6 +21,7 @@ class GameViewController: UIViewController  {
     var rotateZ:Float = 0
     
     var boxNode:SCNNode? = nil
+    var lightNode:SCNNode? = nil
     
     var map:[Field] = [Field]()
     let max:Int = 15
@@ -66,15 +67,21 @@ class GameViewController: UIViewController  {
         _scene.rootNode.addChildNode(cameraNode!)
         
         // create and add a light to the scene
-        let lightNode = SCNNode()
-        lightNode.light = SCNLight()
-        lightNode.light!.type = SCNLightTypeOmni
-        lightNode.position = SCNVector3(x: 0, y: 15*2+10, z: 50)
-        _scene.rootNode.addChildNode(lightNode)
+        lightNode = SCNNode()
+        lightNode!.light = SCNLight()
+        lightNode!.light!.type = SCNLightTypeOmni
+//        lightNode!.light!.attenuationEndDistance = 100
+        //lightNode.light!.type = SCNLightTypeDirectional
+        lightNode!.position = SCNVector3(x: 0, y: 15*2+10, z: 50)
+//        lightNode!.position = cameraNode!.position
+        
+        
+        _scene.rootNode.addChildNode(lightNode!)
         
         // create and add an ambient light to the scene
         let ambientLightNode = SCNNode()
         ambientLightNode.light = SCNLight()
+        //vambientLightNode.light!.type = SCNLightTypeAmbient
         ambientLightNode.light!.type = SCNLightTypeAmbient
         ambientLightNode.light!.color = UIColor.grayColor()
         _scene.rootNode.addChildNode(ambientLightNode)
@@ -267,11 +274,14 @@ class GameViewController: UIViewController  {
         
         if baseCoinNode == nil {
         
-        let _coin = SCNCylinder(radius: 0.5, height: 0.1)
-        
+
+            let _coin = SCNCylinder(radius: 0.4, height: 0.1)
+//        let _coin = SCNSphere(radius: 0.4)
         let _material = SCNMaterial()
         _material.diffuse.contents = UIColor.yellowColor()
+//        _material.emission.contents = UIColor.yellowColor()
         _coin.firstMaterial = _material
+        
         
         baseCoinNode = SCNNode(geometry: _coin)
         }
@@ -289,8 +299,13 @@ class GameViewController: UIViewController  {
             let _cloneNode = baseCoinNode!.flattenedClone()
             _cloneNode.position = SCNVector3(x: x,  y: y, z: z)
             
-            let _action = SCNAction.rotateByAngle(CGFloat(M_PI * 2), aroundAxis: SCNVector3(x:0,y:0,z:1), duration: 5.0)
-            //_cloneNode.runAction(SCNAction.repeatActionForever(_action))
+            let _actions:[SCNAction] = [
+                SCNAction.waitForDuration(NSTimeInterval( arc4random_uniform(5) )),
+                SCNAction.repeatActionForever(
+                SCNAction.rotateByAngle(CGFloat(M_PI * 2), aroundAxis: SCNVector3(x:0,y:0,z:1), duration: 5.0)
+                    )]
+            
+            _cloneNode.runAction(SCNAction.sequence(_actions))
             
             _scene.rootNode.addChildNode(_cloneNode)
             
@@ -351,12 +366,15 @@ class GameViewController: UIViewController  {
         default: break;
         }
         
+         let _position = SCNVector3(x:Float(player.x*2)+_xx,y:Float(player.y*2)+_yy,z:Float(player.z*2)+_zz)
          let _action =
-         SCNAction.moveTo(SCNVector3(x:Float(player.x*2)+_xx,y:Float(player.y*2)+_yy,z:Float(player.z*2)+_zz),
-             duration: 0.01)
+         SCNAction.moveTo(_position,duration: 0.01)
         
          cameraNode!.runAction(_action)
 
+        
+//        lightNode!.position = _position
+        
 //        cameraNode!.position = SCNVector3(x:Float(player.x*2)+_xx,y:Float(player.y*2)+_yy,z:Float(player.z*2)+_zz)
         
         return
@@ -444,8 +462,11 @@ class GameViewController: UIViewController  {
         default: break;
         }
         
-        let _moveAction = SCNAction.moveTo(
-            SCNVector3(x:Float(player.x*2) + _xx, y:Float(player.y*2) + _yy, z:Float(player.z*2) + _zz), duration: 0.1)
+        let _position = SCNVector3(x:Float(player.x*2) + _xx, y:Float(player.y*2) + _yy, z:Float(player.z*2) + _zz)
+        
+//        lightNode!.position = _position
+        
+        let _moveAction = SCNAction.moveTo(_position, duration: 0.1)
         
 //        let _groupAction = SCNAction.group([_rotateAction, _moveAction])
 //        let _resetAction = SCNAction.runBlock { (node) -> Void in
