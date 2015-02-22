@@ -61,7 +61,7 @@ class Map {
                         && (!(_zz < 0 && _z < 3)) && (!(_zz > 0 && _z > (_max-4)))
                         ) {
                             
-                        println("hit _x:\(_x) _y:\(_y) _z:\(_z) _xx:\(_xx) _yy:\(_yy) _zz:\(_zz)")
+//                        println("hit _x:\(_x) _y:\(_y) _z:\(_z) _xx:\(_xx) _yy:\(_yy) _zz:\(_zz)")
                             
                         var _n = _map[(_x+_xx*2)+(_y+_yy*2)*_max+(_z+_zz*2)*_max*_max]
                             // var _key1 = "w\(_x+_xx*2+(_y+_yy*2)*_max)"
@@ -83,16 +83,18 @@ class Map {
                     _y += _yy
                     _z += _zz
                     
-                    println("x:\(_x) y:\(_y) z:\(_z)")
+//                    println("x:\(_x) y:\(_y) z:\(_z)")
                     
                     _xyz = _x + (_y * _max) + (_z * _max * _max)
                     _map[_xyz].wall = false
+                    _map[_xyz].coin = true
                     
                     _x += _xx
                     _y += _yy
                     _z += _zz
                     println("x:\(_x) y:\(_y) z:\(_z)")
                     _map[_x+(_y*_max)+(_z * _max*_max)].wall = false
+                    _map[_x+(_y*_max)+(_z * _max*_max)].coin = true
                     _roads += [_x+_y * _max + _z*_max*_max]
                     continue
                 }

@@ -10,6 +10,7 @@ import Foundation
 
 class Field {
     var wall = true
+    var coin = false
     init() {
     }
 }

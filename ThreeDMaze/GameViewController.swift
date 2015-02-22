@@ -14,7 +14,7 @@ class GameViewController: UIViewController  {
     
     var cameraNode:SCNNode? = nil
     // var player:Player = Player(front:.N, head:.C, x:3, y:5, z:1)
-    var player:Player = Player(front:.N, head:.C, x:5, y:5, z:5)
+    var player:Player = Player(front:.N, head:.C, x:1, y:1, z:1)
     
     var rotateX:Float = 0
     var rotateY:Float = 0
@@ -99,7 +99,7 @@ class GameViewController: UIViewController  {
                 for _x in 0..<_max {
                     
                     let _field = map[_x + _y * _max + _z * _max * _max]
-                    if _field.wall == false {
+                    if _field.wall == false && _field.coin == true {
                         createCoin(Float(_x * 2), y: Float(_y * 2), z: Float(_z * 2), no: 0)
                         continue
                     }
@@ -298,6 +298,9 @@ class GameViewController: UIViewController  {
 
             let _cloneNode = baseCoinNode!.flattenedClone()
             _cloneNode.position = SCNVector3(x: x,  y: y, z: z)
+            _cloneNode.name = "coin\(Int(x) + Int(y) * max  + Int(z) * max * max)"
+            
+            println(_cloneNode.name)
             
             let _actions:[SCNAction] = [
                 SCNAction.waitForDuration(NSTimeInterval( arc4random_uniform(5) )),
@@ -342,9 +345,11 @@ class GameViewController: UIViewController  {
     // MARK: move
     func moveFront() {
         
+        
+        
         var _xyz = player.front.xyz()
         _xyz = [player.x+_xyz[0], player.y+_xyz[1], player.z+_xyz[2]]
-        let _frontField = Map.getField(_xyz[0], y: _xyz[1], z:_xyz[2] , map:map, max:15)
+        let _frontField = Map.getField(_xyz[0], y: _xyz[1], z:_xyz[2] , map:map, max:max)
         if _frontField.wall == true {
             return
         }
@@ -352,6 +357,29 @@ class GameViewController: UIViewController  {
         player.x = _xyz[0]
         player.y = _xyz[1]
         player.z = _xyz[2]
+
+        if _frontField.coin == true{
+            
+            let _view = self.view as SCNView?
+            let _name = "coin\(Int(player.x) + Int(player.y) * max + Int(player.z) * max * max)"
+            if let _coinNode = _view!.scene!.rootNode.childNodeWithName(_name, recursively:false) {
+                _coinNode.removeFromParentNode()
+            }
+       
+            println(_name)
+            for _node in _view!.scene!.rootNode.childNodes as [SCNNode] {
+                if _node.name != nil {
+                    println(_node.name)
+                }
+                
+            }
+            
+            
+            
+            _frontField.coin = false
+        }
+        
+        
         
         
         // 実際の座標に対し、少し引く
