@@ -224,6 +224,7 @@ class ControllerScene: SKScene {
         _rightLabel.name = "right"
         addChild(_rightLabel)
         
+        refreshCoinLabel()
         //        let _rotateLabel = SKLabelNode(text: "ROTATE")
         //        _rotateLabel.position = CGPointMake(CGRectGetMaxX(frame) * 0.75, CGRectGetMaxY(frame) * 0.25)
         //        _rotateLabel.zPosition = _zPosition
@@ -259,33 +260,30 @@ class ControllerScene: SKScene {
         
     }
     
-    //    func getField(x:Int, y:Int, z:Int, map:[Field])->Field {
-    //        let _max = 15
-    //
-    //        if (x < 0 || x >= _max || y < 0 || y >= _max || z < 0 || z >= _max) {
-    //            return Field()
-    //        }
-    //
-    //        let _n = x + y * _max + z * _max * _max;
-    //        if ( _n < 0 || _n >= map.count) {
-    //            return Field()
-    //        }
-    //        return map[_n]
-    //    }
-    
-    
-    func getDirection(xyz:[Int])->Direction {
-        let _directions:[Direction] = [.N, .S, .E, .W, .C, .F]
-        for _d in _directions {
-            if _d.xyz() == xyz {
-                return _d
+    func refreshCoinLabel() {
+        var _coinLabel = childNodeWithName("coin") as SKLabelNode?
+        if _coinLabel == nil {
+            _coinLabel = SKLabelNode(text: "")
+            _coinLabel!.position = CGPointMake(CGRectGetMaxX(frame) - 40, CGRectGetMaxY(frame) - 100)
+            _coinLabel!.zPosition = 1000
+            _coinLabel!.fontSize = 15
+            _coinLabel!.fontColor = UIColor.redColor()
+            _coinLabel!.name = "coin"
+            addChild(_coinLabel!)
+        }
+
+        var _total = 0
+        for _field in gameViewController!.map {
+            if _field.coin {
+                _total += 1
             }
         }
-        return .N
+        
+        _coinLabel!.text = "COIN \(_total)"
     }
     
-    
-    func refreshScreenMiniMap(front:Direction, head:Direction, map:[Field]) {
+    /*
+    func refreshScreenMiniMap(front:Direction, head:Direction, map:[Field], max:Int) {
         
         self.enumerateChildNodesWithName("minimap") {
             node, stop in
@@ -295,7 +293,7 @@ class ControllerScene: SKScene {
         for (var _y = -7;_y<=7;_y++)  {
             for (var _x = -7;_x<=7;_x++) {
                 let _xyz = front.calcXyz(.C, x: 7, y: 7, z: 1, xx: _x, yy: _y, zz: 0)
-                let _wall = Map.getField(_xyz[0], y:_xyz[1], z:_xyz[2], map:map, max:15)
+                let _wall = Map.getField(_xyz[0], y:_xyz[1], z:_xyz[2], map:map, max:max)
                 if _wall.wall == false {
                     continue
                 }
@@ -309,5 +307,5 @@ class ControllerScene: SKScene {
             }
         }
     }
-    
+    */
 }

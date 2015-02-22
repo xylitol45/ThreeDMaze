@@ -72,7 +72,7 @@ class GameViewController: UIViewController  {
         lightNode!.light!.type = SCNLightTypeOmni
 //        lightNode!.light!.attenuationEndDistance = 100
         //lightNode.light!.type = SCNLightTypeDirectional
-        lightNode!.position = SCNVector3(x: 0, y: 15*2+10, z: 50)
+        lightNode!.position = SCNVector3(x: 0, y: 0, z: 50)
 //        lightNode!.position = cameraNode!.position
         
         
@@ -85,40 +85,18 @@ class GameViewController: UIViewController  {
         ambientLightNode.light!.type = SCNLightTypeAmbient
         ambientLightNode.light!.color = UIColor.grayColor()
         _scene.rootNode.addChildNode(ambientLightNode)
-        
-
-//        createBox(10, y: 20, z: 10, no:1)
-//            createBox(10, y:  0, z: 10, no:2)
-//            createBox( 0, y: 10, z: 10, no:3) // 左
-//            createBox(20, y: 10, z: 10, no:4) // 右
-//            boxNode = createBox(10, y: 10, z:  0, no:5)
-//            createBox(10, y: 10, z: 20, no:6)
-        
+                
         for _z in 0..<_max  {
             for _y in 0..<_max {
                 for _x in 0..<_max {
                     
                     let _field = map[_x + _y * _max + _z * _max * _max]
                     if _field.wall == false && _field.coin == true {
-                        createCoin(Float(_x * 2), y: Float(_y * 2), z: Float(_z * 2), no: 0)
+                        createCoin(Float(_x), y: Float(_y), z: Float(_z), no: 0)
                         continue
                     }
                     
-                    createBox(Float(_x * 2), y: Float(_y * 2), z: Float(_z * 2), no: 3)
-                    
-//                    let _box = SCNBox(width: 2, height: 2, length: 2, chamferRadius: 0)
-//                    
-//                    let _material = SCNMaterial()
-//                    _material.diffuse.contents = UIImage(named: "100x100.png")
-//                    
-//                    let _material2 = SCNMaterial()
-//                    _material2.diffuse.contents = UIColor.blueColor()
-//                    _box.firstMaterial = _material
-//                    
-//                    let _boxNode = SCNNode(geometry: _box)
-//                    _boxNode.position = SCNVector3(x: Float(_x)*2,  y: Float(_y)*2, z: Float(_z)*2)
-//                    _scene.rootNode.addChildNode(_boxNode)
-                    
+                    createBox(Float(_x), y: Float(_y), z: Float(_z), no: 3)
                     
                 }
             }
@@ -259,7 +237,7 @@ class GameViewController: UIViewController  {
             //let _cloneNode = baseBoxNode!.clone() as SCNNode
             let _cloneNode = baseBoxNode!.flattenedClone()
             
-            _cloneNode.position = SCNVector3(x: x,  y: y, z: z)
+            _cloneNode.position = SCNVector3(x: x * 2,  y: y * 2, z: z * 2)
             _scene.rootNode.addChildNode(_cloneNode)
             
             return _cloneNode
@@ -274,16 +252,14 @@ class GameViewController: UIViewController  {
         
         if baseCoinNode == nil {
         
-
             let _coin = SCNCylinder(radius: 0.4, height: 0.1)
 //        let _coin = SCNSphere(radius: 0.4)
-        let _material = SCNMaterial()
-        _material.diffuse.contents = UIColor.yellowColor()
+            let _material = SCNMaterial()
+            _material.diffuse.contents = UIColor.yellowColor()
 //        _material.emission.contents = UIColor.yellowColor()
-        _coin.firstMaterial = _material
+            _coin.firstMaterial = _material
         
-        
-        baseCoinNode = SCNNode(geometry: _coin)
+            baseCoinNode = SCNNode(geometry: _coin)
         }
         
         let _view = self.view as SCNView
@@ -297,8 +273,8 @@ class GameViewController: UIViewController  {
 //            let _coinNode = SCNNode(geometry: _coin)
 
             let _cloneNode = baseCoinNode!.flattenedClone()
-            _cloneNode.position = SCNVector3(x: x,  y: y, z: z)
-            _cloneNode.name = "coin\(Int(x) + Int(y) * max  + Int(z) * max * max)"
+            _cloneNode.position = SCNVector3(x: x * 2,  y: y * 2, z: z * 2)
+            _cloneNode.name = "coin\(Int(x) + Int(y) * max + Int(z) * max * max)"
             
             println(_cloneNode.name)
             
@@ -345,8 +321,6 @@ class GameViewController: UIViewController  {
     // MARK: move
     func moveFront() {
         
-        
-        
         var _xyz = player.front.xyz()
         _xyz = [player.x+_xyz[0], player.y+_xyz[1], player.z+_xyz[2]]
         let _frontField = Map.getField(_xyz[0], y: _xyz[1], z:_xyz[2] , map:map, max:max)
@@ -362,24 +336,17 @@ class GameViewController: UIViewController  {
             
             let _view = self.view as SCNView?
             let _name = "coin\(Int(player.x) + Int(player.y) * max + Int(player.z) * max * max)"
-            if let _coinNode = _view!.scene!.rootNode.childNodeWithName(_name, recursively:false) {
+            if let _coinNode = _view!.scene!.rootNode.childNodeWithName(_name, recursively:true) {
                 _coinNode.removeFromParentNode()
             }
        
-            println(_name)
-            for _node in _view!.scene!.rootNode.childNodes as [SCNNode] {
-                if _node.name != nil {
-                    println(_node.name)
-                }
-                
-            }
-            
-            
-            
             _frontField.coin = false
+            
+            if let _gameScene = _view!.overlaySKScene as ControllerScene?{
+                _gameScene.refreshCoinLabel()
+            }
+
         }
-        
-        
         
         
         // 実際の座標に対し、少し引く
@@ -396,7 +363,7 @@ class GameViewController: UIViewController  {
         
          let _position = SCNVector3(x:Float(player.x*2)+_xx,y:Float(player.y*2)+_yy,z:Float(player.z*2)+_zz)
          let _action =
-         SCNAction.moveTo(_position,duration: 0.01)
+         SCNAction.moveTo(_position,duration: 0.2)
         
          cameraNode!.runAction(_action)
 
@@ -471,7 +438,7 @@ class GameViewController: UIViewController  {
         }
         #endif
         // let _rotateAction = SCNAction.rotateByX( _xAngle, y: _yAngle, z: _zAngle, duration: 0.5)
-        let _rotateAction = SCNAction.rotateByAngle(CGFloat(M_PI_2) * _n , aroundAxis: _vec!, duration: 0.1)
+        let _rotateAction = SCNAction.rotateByAngle(CGFloat(M_PI_2) * _n , aroundAxis: _vec!, duration: 0.2)
         
         let _newFrontAndHead = player.front.rotate(player.head, rotation:rotation)
         player.front = _newFrontAndHead[0]
