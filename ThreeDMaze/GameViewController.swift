@@ -309,6 +309,7 @@ class GameViewController: UIViewController  {
             
             let _cloneNode = baseCoinNode!.flattenedClone()
             _cloneNode.position = SCNVector3(x: x * 2,  y: y * 2, z: z * 2)
+            _cloneNode.eulerAngles = SCNVector3(x:Float(M_PI_2 / 3),y:Float(M_PI_2 / 3),z:Float(M_PI_2 / 3))
             _cloneNode.name = "coin\(Int(x) + Int(y) * max + Int(z) * max * max)"
             
             // println(_cloneNode.name)
