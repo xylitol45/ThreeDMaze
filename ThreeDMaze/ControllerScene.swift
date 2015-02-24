@@ -24,11 +24,11 @@ class ControllerScene: SKScene {
     
     var contentCreated = false
     
-    var player = (front:Direction.N, head:Direction.C, xyz:[3,5,1])
+//    var player = (front:Direction.N, head:Direction.C, xyz:[3,5,1])
     //    var playerFront = Direction.N
     //    var playerHead = Direction.C
     //    var playerXyz:[Int] = [3,5,1]
-    var map:[Field] = []
+//    var map:[Field] = []
     
     override func didMoveToView(view: SKView) {
         if (!contentCreated) {

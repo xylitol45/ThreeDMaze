@@ -31,25 +31,16 @@ class Map {
         var _zz = 0
         
         let _vecs=[[1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]]
-        var _v=0
         var _key = ""
-        
-//        for _f in _map {
-//            println(_f.wall ? "ttt" : "fff")
-//        }
-
         
         _map[_x+_y*_max+_z*_max*_max].wall = false
         
-//        for _f in _map {
-//            println(_f.wall ? "ttt" : "fff")
-//        }
         
         
         while(true) {
             while(true) {
                 var _flg=false
-                _v = Int(arc4random_uniform(UInt32(_vecs.count)))
+                let _v = Int(arc4random_uniform(UInt32(_vecs.count)))
                 for i in 0..<_vecs.count {
                     
                     _xx = _vecs[(_v+i) % 6][0]
@@ -87,14 +78,14 @@ class Map {
                     
                     _xyz = _x + (_y * _max) + (_z * _max * _max)
                     _map[_xyz].wall = false
-                    _map[_xyz].coin = true
+                    _map[_xyz].coin = false
                     
                     _x += _xx
                     _y += _yy
                     _z += _zz
-                    println("x:\(_x) y:\(_y) z:\(_z)")
+//                    println("x:\(_x) y:\(_y) z:\(_z)")
                     _map[_x+(_y*_max)+(_z * _max*_max)].wall = false
-                    _map[_x+(_y*_max)+(_z * _max*_max)].coin = true
+                    _map[_x+(_y*_max)+(_z * _max*_max)].coin = false
                     _roads += [_x+_y * _max + _z*_max*_max]
                     continue
                 }
@@ -118,6 +109,17 @@ class Map {
             
         }
 
+        var _wallCount = 0
+        for _field in _map {
+            if _field.wall == true{
+                continue
+            }
+            _wallCount = (_wallCount + 1) % 10
+            if (_wallCount == 0) {
+                _field.coin = true
+            }
+        }
+        
         return _map
     }
     
