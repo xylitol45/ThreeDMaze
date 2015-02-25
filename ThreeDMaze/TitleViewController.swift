@@ -27,19 +27,27 @@ class TitleViewController: UIViewController  {
         // 読み込むストーリーボードファイル名（拡張子は含めない）と、ストーリーボードおよび関連リソースを含むバンドルを指定する
         // バンドルにnilを指定した場合は現在のアプリケーションのメインバンドルが対象となる
 //        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"" bundle:nil];
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        
+//        let storyboard = UIStoryboard(name: "Main", bundle: nil)
         
         // ストーリーボードでコントローラーのStoryboard IDとして設定した値を引数にインスタンスを生成する
 //        FooController *fooController = [storyboard instantiateViewControllerWithIdentifier:@"fooController"];
         
-        ctrl = storyboard.instantiateViewControllerWithIdentifier("3d") as GameViewController?
+//        ctrl = storyboard.instantiateViewControllerWithIdentifier("3d") as GameViewController?
         
         
 //        ctrl = GameViewController()
     
 //        t3v = ctrl!.view as SCNView
         // t4v = ctrl!.view as SCNView
+        
+        println(t4v!.frame)
+        
+        t4v!.backgroundColor = UIColor.redColor()
+        
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        ctrl = storyboard.instantiateViewControllerWithIdentifier("3d") as GameViewController?
+        
+        t4v = ctrl!.view as SCNView
         
             println(sender)
     }

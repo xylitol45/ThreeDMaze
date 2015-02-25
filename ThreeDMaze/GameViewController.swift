@@ -44,6 +44,9 @@ class GameViewController: UIViewController  {
         let _scene = SCNScene()
         
         let scnView = self.view as SCNView
+        
+        println(scnView.frame)
+        
         scnView.allowsCameraControl = false
         scnView.showsStatistics = true
         scnView.backgroundColor = UIColor.blackColor()
