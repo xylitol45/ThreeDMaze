@@ -114,7 +114,7 @@ class Map {
             if _field.wall == true{
                 continue
             }
-            _wallCount = (_wallCount + 1) % 10
+            _wallCount = (_wallCount + 1) % 20
             if (_wallCount == 0) {
                 _field.coin = true
             }

@@ -24,11 +24,11 @@ class GameViewController: UIViewController  {
     var lightNode:SCNNode? = nil
     
     var map:[Field] = [Field]()
-    let max:Int = 9
+    let max:Int = 11
     
-    func getCameraNode()->SCNNode {
-        return cameraNode!
-    }
+//    func getCameraNode()->SCNNode {
+//        return cameraNode!
+//    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -97,7 +97,7 @@ class GameViewController: UIViewController  {
                     }
                     
                     if _field.wall == true {
-                        createBox(Float(_x), y: Float(_y), z: Float(_z), no: 3)
+                        createBox(Float(_x), y: Float(_y), z: Float(_z), no: 0)
                     }
                 }
             }
@@ -278,13 +278,14 @@ class GameViewController: UIViewController  {
     func createCoin(x:Float, y:Float, z:Float, no:Int)->SCNNode? {
         
         if baseCoinNode == nil {
-            let _actions:[SCNAction] = [
-                SCNAction.waitForDuration(NSTimeInterval( arc4random_uniform(5) )),
-                SCNAction.repeatActionForever(
-                    SCNAction.rotateByAngle(CGFloat(M_PI * 2), aroundAxis: SCNVector3(x:0,y:0,z:1), duration: 5.0)
-                )]
+//            let _actions:[SCNAction] = [
+//                SCNAction.waitForDuration(NSTimeInterval( arc4random_uniform(5) )),
+//                SCNAction.repeatActionForever(
+//                    SCNAction.rotateByAngle(CGFloat(M_PI * 2), aroundAxis: SCNVector3(x:0,y:0,z:1), duration: 10.0)
+//                )]
             
             let _coin = SCNCylinder(radius: 0.4, height: 0.1)
+//            let _coin = SCNPyramid(width: 0.2, height: 0.5, length: 0.2)
             //        let _coin = SCNSphere(radius: 0.4)
             let _material = SCNMaterial()
             _material.diffuse.contents = UIColor.yellowColor()
@@ -293,7 +294,7 @@ class GameViewController: UIViewController  {
             
             baseCoinNode = SCNNode(geometry: _coin)
 
-            // baseCoinNode!.runAction(SCNAction.sequence(_actions))
+//            baseCoinNode!.runAction(SCNAction.sequence(_actions))
 
         }
         
@@ -309,7 +310,7 @@ class GameViewController: UIViewController  {
             
             let _cloneNode = baseCoinNode!.flattenedClone()
             _cloneNode.position = SCNVector3(x: x * 2,  y: y * 2, z: z * 2)
-            _cloneNode.eulerAngles = SCNVector3(x:Float(M_PI_2 / 3),y:Float(M_PI_2 / 3),z:Float(M_PI_2 / 3))
+//            _cloneNode.eulerAngles = SCNVector3(x:Float(M_PI_2 / 3),y:Float(M_PI_2 / 3),z:Float(M_PI_2 / 3))
             _cloneNode.name = "coin\(Int(x) + Int(y) * max + Int(z) * max * max)"
             
             // println(_cloneNode.name)

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		070B6B671A94F26A00068C22 /* 100x100_0.png in Resources */ = {isa = PBXBuildFile; fileRef = 070B6B661A94F26A00068C22 /* 100x100_0.png */; };
+		0736CE221A9E11B300FF29D4 /* TitleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0736CE211A9E11B300FF29D4 /* TitleViewController.swift */; };
 		0776CF2B1A8B6F7000EDF73E /* Direction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0776CF281A8B6F7000EDF73E /* Direction.swift */; };
 		0776CF2C1A8B6F7000EDF73E /* Field.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0776CF291A8B6F7000EDF73E /* Field.swift */; };
 		0776CF2D1A8B6F7000EDF73E /* Rotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0776CF2A1A8B6F7000EDF73E /* Rotation.swift */; };
@@ -41,6 +42,7 @@
 
 /* Begin PBXFileReference section */
 		070B6B661A94F26A00068C22 /* 100x100_0.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 100x100_0.png; sourceTree = "<group>"; };
+		0736CE211A9E11B300FF29D4 /* TitleViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TitleViewController.swift; sourceTree = "<group>"; };
 		0776CF281A8B6F7000EDF73E /* Direction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Direction.swift; sourceTree = "<group>"; };
 		0776CF291A8B6F7000EDF73E /* Field.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Field.swift; sourceTree = "<group>"; };
 		0776CF2A1A8B6F7000EDF73E /* Rotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Rotation.swift; sourceTree = "<group>"; };
@@ -123,6 +125,7 @@
 				071301C21A93AEDC009DF9AF /* Resources */,
 				07A759DF1A81040E00914243 /* AppDelegate.swift */,
 				07E39AE11A8CEDED00279A1E /* GameViewController.swift */,
+				0736CE211A9E11B300FF29D4 /* TitleViewController.swift */,
 				07A759E31A81040E00914243 /* ControllerScene.swift */,
 				0776CF281A8B6F7000EDF73E /* Direction.swift */,
 				0776CF291A8B6F7000EDF73E /* Field.swift */,
@@ -275,6 +278,7 @@
 				07E39AE61A8D0B1200279A1E /* Map.swift in Sources */,
 				07A759E01A81040E00914243 /* AppDelegate.swift in Sources */,
 				0776CF2B1A8B6F7000EDF73E /* Direction.swift in Sources */,
+				0736CE221A9E11B300FF29D4 /* TitleViewController.swift in Sources */,
 				0776CF2D1A8B6F7000EDF73E /* Rotation.swift in Sources */,
 				07A799321A92601B00A5F96F /* Player.swift in Sources */,
 				07E39AE21A8CEDED00279A1E /* GameViewController.swift in Sources */,
