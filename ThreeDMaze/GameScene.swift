@@ -16,7 +16,7 @@ import SceneKit
 //    func setCameraRotateAndPosition(front:Direction, head:Direction, x:Int, y:Int, z:Int)
 //}
 
-class ControllerScene: SKScene {
+class GameScene: SKScene {
     
     //    var gameSceneDelegate:GameSceneDelegate! = nil
     

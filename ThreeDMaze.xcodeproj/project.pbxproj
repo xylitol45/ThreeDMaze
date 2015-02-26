@@ -13,7 +13,7 @@
 		0776CF2C1A8B6F7000EDF73E /* Field.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0776CF291A8B6F7000EDF73E /* Field.swift */; };
 		0776CF2D1A8B6F7000EDF73E /* Rotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0776CF2A1A8B6F7000EDF73E /* Rotation.swift */; };
 		07A759E01A81040E00914243 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07A759DF1A81040E00914243 /* AppDelegate.swift */; };
-		07A759E41A81040E00914243 /* ControllerScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07A759E31A81040E00914243 /* ControllerScene.swift */; };
+		07A759E41A81040E00914243 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07A759E31A81040E00914243 /* GameScene.swift */; };
 		07A759E91A81040E00914243 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 07A759E71A81040E00914243 /* Main.storyboard */; };
 		07A759EB1A81040E00914243 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07A759EA1A81040E00914243 /* Images.xcassets */; };
 		07A759EE1A81040E00914243 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 07A759EC1A81040E00914243 /* LaunchScreen.xib */; };
@@ -49,7 +49,7 @@
 		07A759DA1A81040E00914243 /* ThreeDMaze.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ThreeDMaze.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		07A759DE1A81040E00914243 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		07A759DF1A81040E00914243 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		07A759E31A81040E00914243 /* ControllerScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControllerScene.swift; sourceTree = "<group>"; };
+		07A759E31A81040E00914243 /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
 		07A759E81A81040E00914243 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		07A759EA1A81040E00914243 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		07A759ED1A81040E00914243 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
@@ -126,7 +126,7 @@
 				07A759DF1A81040E00914243 /* AppDelegate.swift */,
 				07E39AE11A8CEDED00279A1E /* GameViewController.swift */,
 				0736CE211A9E11B300FF29D4 /* TitleViewController.swift */,
-				07A759E31A81040E00914243 /* ControllerScene.swift */,
+				07A759E31A81040E00914243 /* GameScene.swift */,
 				0776CF281A8B6F7000EDF73E /* Direction.swift */,
 				0776CF291A8B6F7000EDF73E /* Field.swift */,
 				0776CF2A1A8B6F7000EDF73E /* Rotation.swift */,
@@ -274,7 +274,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0776CF2C1A8B6F7000EDF73E /* Field.swift in Sources */,
-				07A759E41A81040E00914243 /* ControllerScene.swift in Sources */,
+				07A759E41A81040E00914243 /* GameScene.swift in Sources */,
 				07E39AE61A8D0B1200279A1E /* Map.swift in Sources */,
 				07A759E01A81040E00914243 /* AppDelegate.swift in Sources */,
 				0776CF2B1A8B6F7000EDF73E /* Direction.swift in Sources */,

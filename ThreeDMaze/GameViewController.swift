@@ -24,7 +24,7 @@ class GameViewController: UIViewController  {
     var lightNode:SCNNode? = nil
     
     var map:[Field] = [Field]()
-    let max:Int = 11
+    var max:Int = 11
     
 //    func getCameraNode()->SCNNode {
 //        return cameraNode!
@@ -120,7 +120,7 @@ class GameViewController: UIViewController  {
         
         
         
-        let _gameScene = ControllerScene(size:CGSizeMake(667,375))
+        let _gameScene = GameScene(size:CGSizeMake(667,375))
         _gameScene.gameViewController = self
         _gameScene.scaleMode = .AspectFit
         _gameScene.createMiniMap(map, max: _max, z:player.z)
@@ -367,7 +367,7 @@ class GameViewController: UIViewController  {
        
             _frontField.coin = false
             
-            if let _gameScene = _view!.overlaySKScene as ControllerScene?{
+            if let _gameScene = _view!.overlaySKScene as GameScene?{
                 _gameScene.refreshCoinLabel()
             }
 
