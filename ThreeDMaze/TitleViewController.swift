@@ -12,6 +12,8 @@ import SceneKit
 
 class TitleViewController: UIViewController  {
     
+    var max = 7
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -23,7 +25,7 @@ class TitleViewController: UIViewController  {
         
         scnView.allowsCameraControl = false
         scnView.showsStatistics = false
-    
+        
         scnView.backgroundColor = UIColor.blackColor()
         
         scnView.scene = _scene
@@ -58,7 +60,7 @@ class TitleViewController: UIViewController  {
         
         
         let _boxNode = SCNNode(geometry: _box)
-        _boxNode.position = SCNVector3(x:-2, y:0, z:0)
+        _boxNode.position = SCNVector3(x:-1.5, y:0, z:0)
         
         let _action = SCNAction.rotateByAngle(CGFloat(M_PI) * -2, aroundAxis: SCNVector3(x: 1, y: 1, z: 1), duration: 10)
         
@@ -69,24 +71,33 @@ class TitleViewController: UIViewController  {
         
         let _frame = self.view.frame
         
-        createButton("[5x5x5]", point:CGPointMake(CGRectGetMaxX(_frame) * 0.6, CGRectGetMidY(_frame) - 32))
-        createButton("[7x7x7]", point:CGPointMake(CGRectGetMaxX(_frame) * 0.6, CGRectGetMidY(_frame)  ))
-        createButton("[11x11x11]", point:CGPointMake(CGRectGetMaxX(_frame) * 0.6, CGRectGetMidY(_frame) + 32))
+        let _btn = CommonUtil.makeButton("[5x5x5]", point:CGPointMake(CGRectGetMaxX(_frame) * 0.7, CGRectGetMidY(_frame) - 60))
+        _btn.addTarget(self, action: "touchButton:", forControlEvents:.TouchUpInside)
+        view.addSubview(_btn)
         
-//        let _lbl = UILabel(frame: CGRectMake(CGRectGetMidX(_frame), CGRectGetMidY(_frame), 100, 20))
-//        _lbl.backgroundColor = UIColor.redColor()
-//        _lbl.textColor = UIColor.whiteColor()
-//        _lbl.text = "HELLO"
-//        self.view.addSubview(_lbl)
+        let _btn2 = CommonUtil.makeButton("[7x7x7]", point:CGPointMake(CGRectGetMaxX(_frame) * 0.7, CGRectGetMidY(_frame)  ))
+        _btn2.addTarget(self, action: "touchButton:", forControlEvents:.TouchUpInside)
+        view.addSubview(_btn2)
         
-//        let _gameScene = ControllerScene(size:CGSizeMake(667,375))
-//        _gameScene.gameViewController = self
-//        _gameScene.scaleMode = .AspectFit
-//        _gameScene.createMiniMap(map, max: _max, z:player.z)
-//        scnView.overlaySKScene = _gameScene
+        let _btn3 = CommonUtil.makeButton("[11x11x11]", point:CGPointMake(CGRectGetMaxX(_frame) * 0.7, CGRectGetMidY(_frame) + 60))
+        _btn3.addTarget(self, action: "touchButton:", forControlEvents:.TouchUpInside)
+        view.addSubview(_btn3)
+
+        
+        //        let _lbl = UILabel(frame: CGRectMake(CGRectGetMidX(_frame), CGRectGetMidY(_frame), 100, 20))
+        //        _lbl.backgroundColor = UIColor.redColor()
+        //        _lbl.textColor = UIColor.whiteColor()
+        //        _lbl.text = "HELLO"
+        //        self.view.addSubview(_lbl)
+        
+        //        let _gameScene = ControllerScene(size:CGSizeMake(667,375))
+        //        _gameScene.gameViewController = self
+        //        _gameScene.scaleMode = .AspectFit
+        //        _gameScene.createMiniMap(map, max: _max, z:player.z)
+        //        scnView.overlaySKScene = _gameScene
         
     }
-
+    
     override func supportedInterfaceOrientations() -> Int {
         if UIDevice.currentDevice().userInterfaceIdiom == .Phone {
             return Int(UIInterfaceOrientationMask.AllButUpsideDown.rawValue)
@@ -94,11 +105,11 @@ class TitleViewController: UIViewController  {
             return Int(UIInterfaceOrientationMask.All.rawValue)
         }
     }
-
+    
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "openGameViewController" {
             let _ctrl = segue.destinationViewController as GameViewController
-            _ctrl.max = 11
+            _ctrl.max = self.max
         }
     }
     
@@ -131,7 +142,7 @@ class TitleViewController: UIViewController  {
     }
     
     func createButton(title:String, point:CGPoint) {
-
+        
         let _frame = self.view.frame
         
         let button = UIButton()
@@ -146,7 +157,7 @@ class TitleViewController: UIViewController  {
         button.setTitleColor(UIColor.redColor(), forState: .Normal)
         
         //タップした状態のテキスト
-//        button.setTitle("Tapped!", forState: .Highlighted)
+        //        button.setTitle("Tapped!", forState: .Highlighted)
         
         //タップした状態の色
         button.setTitleColor(UIColor(red: 1, green: 0.5, blue: 0.5, alpha: 1.0), forState: .Highlighted)
@@ -155,19 +166,19 @@ class TitleViewController: UIViewController  {
         button.frame = CGRectMake(CGRectGetMidX(_frame), CGRectGetMidY(_frame), 100, 25)
         
         //タグ番号
-        button.tag = 1
+        //button.tag = 1
         
         //配置場所
         button.layer.position = point
         
         //背景色
-//        button.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.2)
+        //        button.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.2)
         
         //角丸
-//        button.layer.cornerRadius = 5
+        //        button.layer.cornerRadius = 5
         
         //ボーダー幅
-//        button.layer.borderWidth = 1
+        //        button.layer.borderWidth = 1
         
         //ボタンをタップした時に実行するメソッドを指定
         button.addTarget(self, action: "touchButton:", forControlEvents:.TouchUpInside)
@@ -178,12 +189,19 @@ class TitleViewController: UIViewController  {
     
     func touchButton(sender: UIButton){
         
+        println(sender)
+        let _text = sender.titleLabel?.text
+        if _text == nil {
+            return
+        }
+        switch(_text!) {
+        case "[5x5x5]":max=5;
+        case "[7x7x7]":max=7;
+        case "[9x9x9]":max=9;
+        case "[11x11x11]":max=11;
+        default:return
+        }
+        
         performSegueWithIdentifier("openGameViewController", sender: self)
-//        
-//        println("onClickMyButton:")
-//        println("sender.currentTitile: \(sender.currentTitle)")
-//        println("sender.tag: \(sender.tag)")
-        
-        
     }
 }
