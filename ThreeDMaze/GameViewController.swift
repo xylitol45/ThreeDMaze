@@ -124,6 +124,8 @@ class GameViewController: UIViewController  {
         _gameScene.gameViewController = self
         _gameScene.scaleMode = .AspectFit
         _gameScene.createMiniMap(map, max: _max, z:player.z)
+        
+        
         scnView.overlaySKScene = _gameScene
         
     }

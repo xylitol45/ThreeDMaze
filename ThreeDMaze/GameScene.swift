@@ -23,6 +23,8 @@ class GameScene: SKScene {
     var gameViewController:GameViewController! = nil
     
     var contentCreated = false
+    var lastUpdateTime:CFTimeInterval = 0
+
     
 //    var player = (front:Direction.N, head:Direction.C, xyz:[3,5,1])
     //    var playerFront = Direction.N
@@ -37,101 +39,13 @@ class GameScene: SKScene {
         }
     }
     
-    override func touchesBegan(touches: NSSet, withEvent event: UIEvent) {
-        if touches.count != 1 {
-            return
-        }
-        
-        // return
-        
-        let _player = gameViewController.player
-        
-        let _touch: AnyObject = touches.anyObject()!
-        let _location = _touch.locationInNode(self)
-        if let _node:SKNode = self.nodeAtPoint(_location) as SKNode!{
-            var _name:String = ((_node.name == nil) ? "" : _node.name!)
-            
-            //            if _name == "rotatex" || _name == "rotatey" || _name == "rotatez" {
-            //
-            //                let _labelNode = _node as SKLabelNode
-            //
-            //                switch _name {
-            //                case "rotatex":
-            //                    game2ViewController.rotateX = (game2ViewController.rotateX + 1) % 4
-            //                    _labelNode.text = "ROTATEX\(game2ViewController.rotateX)"
-            //                case "rotatey":
-            //                    game2ViewController.rotateY = (game2ViewController.rotateY + 1) % 4
-            //                    _labelNode.text = "ROTATEY\(game2ViewController.rotateY)"
-            //                case "rotatez":
-            //                    game2ViewController.rotateZ = (game2ViewController.rotateZ + 1) % 4
-            //                    _labelNode.text = "ROTATEZ\(game2ViewController.rotateZ)"
-            //                default:break;
-            //                }
-            //
-            //                let _n = Float(M_PI_2)
-            //
-            //                game2ViewController.cameraNode!.eulerAngles =
-            //                SCNVector3(x: game2ViewController.rotateX * _n, y:game2ViewController.rotateY * _n, z:game2ViewController.rotateZ * _n)
-            //                return
-            //            }
-            
-            if _name == "right" || _name == "left" || _name == "up" || _name == "down" {
-                var _rotation:Rotation? = nil
-                switch _name {
-                case "right":_rotation = .RIGHT
-                case "left":_rotation = .LEFT
-                case "up":_rotation = .UP
-                case "down":_rotation = .DOWN
-                default:break;
-                }
-                if _rotation != nil {
-                    gameViewController.rotateFront(_rotation!)
-                } else {
-                    return
-                }
-                //            } else if _name == "rotate" {
-                //
-                //                _player.head = _player.head.right(_player.front.opposite())
-                //
-            } else if _name == "front" {
-                
-                gameViewController.moveFront()
-                
-            } else {
-                return
-            }
-        } else {
-            return
-        }
-        
-        
-        if let _node:SKLabelNode = childNodeWithName("front") as SKLabelNode! {
-            _node.text = "FRONT:\(_player.front.toString()) HEAD:\(_player.head.toString())"
-                + "(\(_player.x),\(_player.y),\(_player.z))"
-        }
-        
-        if let _node:SKLabelNode = childNodeWithName("up") as SKLabelNode! {
-            let _xyz = _player.front.calcXyz(_player.head, x: _player.x, y: _player.y, z: _player.z, xx:0, yy:0, zz:1);
-            _node.text = "UP(\(_xyz[0]),\(_xyz[1]),\(_xyz[2]))";
-        }
-        if let _node:SKLabelNode = childNodeWithName("down") as SKLabelNode! {
-            let _xyz = _player.front.calcXyz(_player.head, x: _player.x, y: _player.y, z: _player.z, xx:0, yy:0, zz:-1);
-            _node.text = "DOWN(\(_xyz[0]),\(_xyz[1]),\(_xyz[2]))";
-        }
-        if let _node:SKLabelNode = childNodeWithName("right") as SKLabelNode! {
-            let _xyz = _player.front.calcXyz(_player.head, x: _player.x, y: _player.y, z: _player.z, xx:1, yy:0, zz:0)
-            _node.text = "RIGHT(\(_xyz[0]),\(_xyz[1]),\(_xyz[2]))";
-        }
-        if let _node:SKLabelNode = childNodeWithName("left") as SKLabelNode! {
-            let _xyz = _player.front.calcXyz(_player.head, x: _player.x, y: _player.y, z: _player.z, xx:-1, yy:0, zz:0)
-            _node.text = "LEFT(\(_xyz[0]),\(_xyz[1]),\(_xyz[2]))";
-        }
-        
-        createMiniMap(gameViewController.map, max: gameViewController.max, z: _player.z)
-    }
     
     override func update(currentTime: CFTimeInterval) {
         /* Called before each frame is rendered */
+        if (currentTime-lastUpdateTime) > 0.2 {
+            refreshTimeLabel(Int(currentTime))
+            lastUpdateTime = currentTime
+        }
         
         
     }
@@ -189,42 +103,7 @@ class GameScene: SKScene {
         _debugLabel.position = CGPointMake(CGRectGetMidX(frame), CGRectGetMaxY(frame) - 100)
         _debugLabel.fontSize = 20
         
-        _debugLabel.zPosition = _zPosition
-        _debugLabel.name = "front"
-        _debugLabel.fontColor = UIColor.redColor()
-        self.addChild(_debugLabel)
-        
-        let _upLabel = SKLabelNode(text: "UP")
-        _upLabel.position = CGPointMake(CGRectGetMidX(frame), CGRectGetMaxY(frame) - 20)
-        _upLabel.zPosition = _zPosition
-        _upLabel.fontSize = 15
-        _upLabel.fontColor = UIColor.redColor()
-        _upLabel.name = "up"
-        addChild(_upLabel)
-        
-        let _downLabel = SKLabelNode(text: "DOWN")
-        _downLabel.position = CGPointMake(CGRectGetMidX(frame), 20)
-        _downLabel.zPosition = _zPosition
-        _downLabel.fontSize = 15
-        _downLabel.fontColor = UIColor.redColor()
-        _downLabel.name = "down"
-        addChild(_downLabel)
-        
-        let _leftLabel = SKLabelNode(text: "LEFT")
-        _leftLabel.position = CGPointMake(40, CGRectGetMidY(frame))
-        _leftLabel.zPosition = _zPosition
-        _leftLabel.fontSize = 15
-        _leftLabel.fontColor = UIColor.redColor()
-        _leftLabel.name = "left"
-        addChild(_leftLabel)
-        
-        let _rightLabel = SKLabelNode(text: "RIGHT")
-        _rightLabel.position = CGPointMake(CGRectGetMaxX(frame) - 40, CGRectGetMidY(frame))
-        _rightLabel.zPosition = _zPosition
-        _rightLabel.fontSize = 15
-        _rightLabel.fontColor = UIColor.redColor()
-        _rightLabel.name = "right"
-        addChild(_rightLabel)
+        refreshTimeLabel(10)
         
         refreshCoinLabel()
     }
@@ -330,6 +209,21 @@ class GameScene: SKScene {
         }
         
         _coinLabel!.text = "COIN \(_total)"
+    }
+    
+    func refreshTimeLabel(time:Int) {
+        var _label = childNodeWithName("time") as SKLabelNode?
+        if _label == nil {
+            _label = SKLabelNode(text: "")
+            _label!.position = CGPointMake(40, CGRectGetMaxY(frame) - 10)
+            _label!.zPosition = 1000
+            _label!.fontSize = 15
+            _label!.fontColor = UIColor.redColor()
+            _label!.name = "time"
+            addChild(_label!)
+        }
+        
+        _label!.text = "TIME \(time)"
     }
     
     /*

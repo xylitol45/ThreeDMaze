@@ -71,11 +71,11 @@ class TitleViewController: UIViewController  {
         
         let _frame = self.view.frame
         
-        let _btn = CommonUtil.makeButton("[5x5x5]", point:CGPointMake(CGRectGetMaxX(_frame) * 0.7, CGRectGetMidY(_frame) - 60))
+        let _btn = CommonUtil.makeButton("[7x7x7]", point:CGPointMake(CGRectGetMaxX(_frame) * 0.7, CGRectGetMidY(_frame) - 60))
         _btn.addTarget(self, action: "touchButton:", forControlEvents:.TouchUpInside)
         view.addSubview(_btn)
         
-        let _btn2 = CommonUtil.makeButton("[7x7x7]", point:CGPointMake(CGRectGetMaxX(_frame) * 0.7, CGRectGetMidY(_frame)  ))
+        let _btn2 = CommonUtil.makeButton("[9x9x9]", point:CGPointMake(CGRectGetMaxX(_frame) * 0.7, CGRectGetMidY(_frame)  ))
         _btn2.addTarget(self, action: "touchButton:", forControlEvents:.TouchUpInside)
         view.addSubview(_btn2)
         
