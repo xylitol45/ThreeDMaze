@@ -26,6 +26,8 @@ class GameViewController: UIViewController  {
     var map:[Field] = [Field]()
     var max:Int = 11
     
+    var titleViewController:TitleViewController? = nil
+    
 //    func getCameraNode()->SCNNode {
 //        return cameraNode!
 //    }

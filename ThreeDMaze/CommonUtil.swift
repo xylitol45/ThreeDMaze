@@ -11,6 +11,11 @@ import UIKit
 
 class CommonUtil {
     
+    class func font(size:CGFloat)->UIFont {
+//        return "HelveticaNeue-UltraLight"
+        return UIFont.boldSystemFontOfSize(size)
+    }
+    
     class func makeButton(title:String, point:CGPoint)->UIButton {
         
 //        let _frame = self.view.frame
@@ -55,6 +60,8 @@ class CommonUtil {
 //        
 //        //viewにボタンを追加する
 //        self.view.addSubview(button)
+        
+        button.titleLabel?.font = CommonUtil.font(20)
         
         return button
     }

@@ -11,26 +11,16 @@
 import SpriteKit
 import SceneKit
 
-//protocol GameSceneDelegate{
-//    func getCameraNode()->SCNNode
-//    func setCameraRotateAndPosition(front:Direction, head:Direction, x:Int, y:Int, z:Int)
-//}
 
 class GameScene: SKScene {
     
-    //    var gameSceneDelegate:GameSceneDelegate! = nil
+    
     
     var gameViewController:GameViewController! = nil
     
     var contentCreated = false
     var lastUpdateTime:CFTimeInterval = 0
-
     
-//    var player = (front:Direction.N, head:Direction.C, xyz:[3,5,1])
-    //    var playerFront = Direction.N
-    //    var playerHead = Direction.C
-    //    var playerXyz:[Int] = [3,5,1]
-//    var map:[Field] = []
     
     override func didMoveToView(view: SKView) {
         if (!contentCreated) {
@@ -39,24 +29,47 @@ class GameScene: SKScene {
         }
     }
     
+    // 呼ばれない
+    //    override func update(currentTime: CFTimeInterval) {
+    //        /* Called before each frame is rendered */
+    //        if (currentTime-lastUpdateTime) > 0.2 {
+    //            refreshTimeLabel(Int(currentTime))
+    //            lastUpdateTime = currentTime
+    //        }
+    //    }
     
-    override func update(currentTime: CFTimeInterval) {
-        /* Called before each frame is rendered */
-        if (currentTime-lastUpdateTime) > 0.2 {
-            refreshTimeLabel(Int(currentTime))
-            lastUpdateTime = currentTime
+    
+    var lastTime:CFTimeInterval = 0
+    
+    func loop(link:CADisplayLink) {
+        
+        println("loop \(link.timestamp)")
+        
+        if link.timestamp - lastUpdateTime > 0.2 {
+            
+            lastUpdateTime = link.timestamp
+            
+            refreshTimeLabel(Int(lastUpdateTime))
+            
+            self.view!.setNeedsDisplay()
         }
         
         
     }
     
+    var displayLink:CADisplayLink? = nil
+    
     // MARK: シーン作成
     func createContentScene() {
+        
+        if displayLink == nil {
+            displayLink = CADisplayLink(target: self, selector: Selector("loop:"))
+            displayLink!.addToRunLoop(NSRunLoop.currentRunLoop(), forMode: NSRunLoopCommonModes)
+        }
         
         createLabel()
         
         createButton()
-        
         
     }
     
@@ -82,7 +95,7 @@ class GameScene: SKScene {
                 self.addChild(_shape)
             }
         }
-
+        
         var _x = gameViewController.player.x
         var _y = gameViewController.player.y
         
@@ -114,12 +127,12 @@ class GameScene: SKScene {
         _btn.contentHorizontalAlignment = UIControlContentHorizontalAlignment.Center
         _btn.addTarget(self, action: "touchButton:", forControlEvents:.TouchUpInside)
         view!.addSubview(_btn)
-
+        
         let _btn2 = CommonUtil.makeButton("[DOWN]", point:CGPointMake(CGRectGetMaxX(frame) * 0.5, CGRectGetMaxY(frame)-20))
         _btn2.contentHorizontalAlignment = UIControlContentHorizontalAlignment.Center
         _btn2.addTarget(self, action: "touchButton:", forControlEvents:.TouchUpInside)
         view!.addSubview(_btn2)
-    
+        
         let _btn3 = CommonUtil.makeButton("[LEFT]", point:CGPointMake(40, CGRectGetMidY(frame)-10))
         _btn3.contentHorizontalAlignment = UIControlContentHorizontalAlignment.Center
         _btn3.addTarget(self, action: "touchButton:", forControlEvents:.TouchUpInside)
@@ -129,22 +142,22 @@ class GameScene: SKScene {
         _btn4.contentHorizontalAlignment = UIControlContentHorizontalAlignment.Center
         _btn4.addTarget(self, action: "touchButton:", forControlEvents:.TouchUpInside)
         view!.addSubview(_btn4)
-
+        
         let _btn5 = CommonUtil.makeButton("[FRONT]", point:CGPointMake(CGRectGetMidX(frame), CGRectGetMidY(frame)-10))
         _btn5.contentHorizontalAlignment = UIControlContentHorizontalAlignment.Center
         _btn5.addTarget(self, action: "touchButton:", forControlEvents:.TouchUpInside)
         view!.addSubview(_btn5)
-    
+        
         let _btn6 = CommonUtil.makeButton("[EXIT]", point:CGPointMake(CGRectGetMaxX(frame) - 40, 20))
         _btn6.contentHorizontalAlignment = UIControlContentHorizontalAlignment.Center
         _btn6.addTarget(self, action: "touchButton:", forControlEvents:.TouchUpInside)
         view!.addSubview(_btn6)
-    
+        
     }
-
+    
     func touchButton(sender: UIButton){
         println(sender)
-
+        
         if sender.titleLabel?.text == nil {
             return
         }
@@ -154,11 +167,18 @@ class GameScene: SKScene {
         let _player = gameViewController.player
         
         if _text == "[EXIT]" {
+            
+            displayLink?.invalidate()
+            displayLink = nil
+            
             gameViewController.dismissViewControllerAnimated(false, completion: nil)
             return
         }
         
         if _text == "[RIGHT]" || _text == "[LEFT]" || _text == "[UP]" || _text == "[DOWN]" {
+            if gameEnd {
+                return
+            }
             var _rotation:Rotation? = nil
             
             switch (_text) {
@@ -178,29 +198,33 @@ class GameScene: SKScene {
                 return
             }
         } else if _text == "[FRONT]" {
-            
+            if gameEnd {
+                return
+            }
             gameViewController.moveFront()
             
         } else {
             return
         }
-    
+        
         createMiniMap(gameViewController.map, max: gameViewController.max, z: _player.z)
-    
+        
     }
-
+    
     func refreshCoinLabel() {
         var _coinLabel = childNodeWithName("coin") as SKLabelNode?
         if _coinLabel == nil {
             _coinLabel = SKLabelNode(text: "")
-            _coinLabel!.position = CGPointMake(CGRectGetMaxX(frame) - 40, CGRectGetMaxY(frame) - 100)
+            _coinLabel!.position = CGPointMake(20, CGRectGetMaxY(frame) - 40)
             _coinLabel!.zPosition = 1000
             _coinLabel!.fontSize = 15
+            _coinLabel!.fontName = CommonUtil.font(15).fontName
             _coinLabel!.fontColor = UIColor.redColor()
+            _coinLabel!.horizontalAlignmentMode = .Left
             _coinLabel!.name = "coin"
             addChild(_coinLabel!)
         }
-
+        
         var _total = 0
         for _field in gameViewController!.map {
             if _field.coin {
@@ -209,16 +233,22 @@ class GameScene: SKScene {
         }
         
         _coinLabel!.text = "COIN \(_total)"
+        
+        if _total == 0 {
+            doGameEnd()
+        }
     }
     
     func refreshTimeLabel(time:Int) {
         var _label = childNodeWithName("time") as SKLabelNode?
         if _label == nil {
             _label = SKLabelNode(text: "")
-            _label!.position = CGPointMake(40, CGRectGetMaxY(frame) - 10)
+            _label!.position = CGPointMake(20, CGRectGetMaxY(frame) - 20)
             _label!.zPosition = 1000
             _label!.fontSize = 15
+            _label!.fontName = CommonUtil.font(15).fontName
             _label!.fontColor = UIColor.redColor()
+            _label!.horizontalAlignmentMode = .Left
             _label!.name = "time"
             addChild(_label!)
         }
@@ -226,30 +256,51 @@ class GameScene: SKScene {
         _label!.text = "TIME \(time)"
     }
     
+    var gameEnd = false
+    
+    func doGameEnd() {
+        
+        if gameEnd {
+            return
+        }
+        
+        gameEnd = true
+        
+        var _label = SKLabelNode(text: "GAME CLEAR.\nOK!!")
+        _label.position = CGPointMake(CGRectGetMidX(frame), CGRectGetMaxY(frame) * 0.75)
+        _label.zPosition = 1000
+        _label.fontSize = 15
+        _label.fontName = CommonUtil.font(15).fontName
+        _label.fontColor = UIColor.redColor()
+        addChild(_label)
+     
+        gameViewController?.titleViewController?.setHighscore(lastUpdateTime)
+    }
+    
     /*
     func refreshScreenMiniMap(front:Direction, head:Direction, map:[Field], max:Int) {
-        
-        self.enumerateChildNodesWithName("minimap") {
-            node, stop in
-            node.removeFromParent()
-        }
-        
-        for (var _y = -7;_y<=7;_y++)  {
-            for (var _x = -7;_x<=7;_x++) {
-                let _xyz = front.calcXyz(.C, x: 7, y: 7, z: 1, xx: _x, yy: _y, zz: 0)
-                let _wall = Map.getField(_xyz[0], y:_xyz[1], z:_xyz[2], map:map, max:max)
-                if _wall.wall == false {
-                    continue
-                }
-                let _shape =  SKShapeNode(rect: CGRectMake(0, 0, 5, 5));
-                _shape.strokeColor = SKColor.blackColor()
-                _shape.fillColor=SKColor.blackColor()
-                _shape.position = CGPointMake(CGFloat(_x*5+300), CGFloat(_y*5+100))
-                _shape.zPosition = 1000
-                _shape.name="minimap"
-                self.addChild(_shape)
-            }
-        }
+    
+    self.enumerateChildNodesWithName("minimap") {
+    node, stop in
+    node.removeFromParent()
+    }
+    
+    for (var _y = -7;_y<=7;_y++)  {
+    for (var _x = -7;_x<=7;_x++) {
+    let _xyz = front.calcXyz(.C, x: 7, y: 7, z: 1, xx: _x, yy: _y, zz: 0)
+    let _wall = Map.getField(_xyz[0], y:_xyz[1], z:_xyz[2], map:map, max:max)
+    if _wall.wall == false {
+    continue
+    }
+    let _shape =  SKShapeNode(rect: CGRectMake(0, 0, 5, 5));
+    _shape.strokeColor = SKColor.blackColor()
+    _shape.fillColor=SKColor.blackColor()
+    _shape.position = CGPointMake(CGFloat(_x*5+300), CGFloat(_y*5+100))
+    _shape.zPosition = 1000
+    _shape.name="minimap"
+    self.addChild(_shape)
+    }
+    }
     }
     */
 }

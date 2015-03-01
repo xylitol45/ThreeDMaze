@@ -13,6 +13,7 @@ import SceneKit
 class TitleViewController: UIViewController  {
     
     var max = 7
+    var highscores:[String:CFTimeInterval] = [:]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -51,23 +52,8 @@ class TitleViewController: UIViewController  {
         ambientLightNode.light!.color = UIColor.grayColor()
         _scene.rootNode.addChildNode(ambientLightNode)
         
-        // create box
-        let _box = SCNBox(width: 2, height: 2, length: 2, chamferRadius: 0)
-        let _material = SCNMaterial()
-        _material.diffuse.contents = self.drawText(UIImage(named: "100x100_0.png")!)
-        _box.firstMaterial = _material
-        
-        
-        
-        let _boxNode = SCNNode(geometry: _box)
-        _boxNode.position = SCNVector3(x:-1.5, y:0, z:0)
-        
-        let _action = SCNAction.rotateByAngle(CGFloat(M_PI) * -2, aroundAxis: SCNVector3(x: 1, y: 1, z: 1), duration: 10)
-        
-        _boxNode.runAction(
-            SCNAction.repeatActionForever(_action))
-        
-        _scene.rootNode.addChildNode(_boxNode)
+        // createTitleBox
+        createTitleBox()
         
         let _frame = self.view.frame
         
@@ -109,15 +95,43 @@ class TitleViewController: UIViewController  {
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "openGameViewController" {
             let _ctrl = segue.destinationViewController as GameViewController
+            _ctrl.titleViewController = self
             _ctrl.max = self.max
         }
     }
     
+    func createTitleBox() {
     
-    func drawText(image :UIImage) ->UIImage
-    {
+        // create box
+        let _box = SCNBox(width: 2, height: 2, length: 2, chamferRadius: 0)
+        let _material = SCNMaterial()
+        _material.diffuse.contents = self.drawText(UIImage(named: "100x100_0.png")!)
+        _box.firstMaterial = _material
+        let _boxNode = SCNNode(geometry: _box)
+        _boxNode.position = SCNVector3(x:-1.5, y:0, z:0)
         
-        let font = UIFont.boldSystemFontOfSize(32)
+        let _action = SCNAction.rotateByAngle(CGFloat(M_PI) * -2, aroundAxis: SCNVector3(x: 1, y: 1, z: 1), duration: 10)
+        
+        _boxNode.runAction(
+            SCNAction.repeatActionForever(_action))
+        
+        
+        let scnView = self.view as SCNView
+        scnView.scene?.rootNode.addChildNode(_boxNode)
+        
+        return
+    }
+    
+    
+    
+    func drawText(image :UIImage) ->UIImage {
+        
+        if let _highscores:AnyObject = NSUserDefaults.standardUserDefaults().objectForKey("highscores") {
+            highscores = _highscores as [String:CFTimeInterval]
+        }
+        
+//        let font = UIFont(name: CommonUtil.fontName(), size: 32)
+        let font = CommonUtil.font(32)
         let imageRect = CGRectMake(0,0,image.size.width,image.size.height)
         
         UIGraphicsBeginImageContext(image.size);
@@ -131,7 +145,19 @@ class TitleViewController: UIViewController  {
             NSForegroundColorAttributeName: UIColor.blackColor(),
             NSParagraphStyleAttributeName: textStyle
         ]
-        let text = "ThreeDMaze\n\n[5x5x5]"
+        var text:String = "ThreeDMaze"
+        
+        if let _7time = highscores["7"] {
+            text += "\n\n[7x7x7]\n\(_7time)"
+        }
+        if let _9time = highscores["9"]  {
+            text += "\n\n[9x9x9]\n\(_9time)"
+        }
+        if let _11time = highscores["11"] {
+            text += "\n\n[11x11x11]\n\(_11time)"
+        }
+        
+        
         text.drawInRect(textRect, withAttributes: textFontAttributes)
         
         let newImage = UIGraphicsGetImageFromCurrentImageContext();
@@ -203,5 +229,15 @@ class TitleViewController: UIViewController  {
         }
         
         performSegueWithIdentifier("openGameViewController", sender: self)
+    }
+    
+    func setHighscore(time:CFTimeInterval) {
+        let _key = "\(self.max)"
+        let _time = highscores[_key] ?? 0
+        if _time == 0 || time < _time {
+            highscores["\(self.max)"] = time
+        }
+        NSUserDefaults.standardUserDefaults().setObject(highscores, forKey: "highscores")
+        NSUserDefaults.standardUserDefaults().synchronize()
     }
 }
