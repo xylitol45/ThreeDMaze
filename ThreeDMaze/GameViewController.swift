@@ -28,9 +28,9 @@ class GameViewController: UIViewController  {
     
     var titleViewController:TitleViewController? = nil
     
-//    func getCameraNode()->SCNNode {
-//        return cameraNode!
-//    }
+    //    func getCameraNode()->SCNNode {
+    //        return cameraNode!
+    //    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -75,10 +75,10 @@ class GameViewController: UIViewController  {
         lightNode = SCNNode()
         lightNode!.light = SCNLight()
         lightNode!.light!.type = SCNLightTypeOmni
-//        lightNode!.light!.attenuationEndDistance = 100
+        //        lightNode!.light!.attenuationEndDistance = 100
         //lightNode.light!.type = SCNLightTypeDirectional
         lightNode!.position = SCNVector3(x: 0, y: 0, z: 50)
-//        lightNode!.position = cameraNode!.position
+        //        lightNode!.position = cameraNode!.position
         
         
         _scene.rootNode.addChildNode(lightNode!)
@@ -90,7 +90,7 @@ class GameViewController: UIViewController  {
         ambientLightNode.light!.type = SCNLightTypeAmbient
         ambientLightNode.light!.color = UIColor.grayColor()
         _scene.rootNode.addChildNode(ambientLightNode)
-                
+        
         for _z in 0..<_max  {
             for _y in 0..<_max {
                 for _x in 0..<_max {
@@ -215,7 +215,7 @@ class GameViewController: UIViewController  {
     }
     
     
-
+    
     
     override func shouldAutorotate() -> Bool {
         return true
@@ -248,7 +248,7 @@ class GameViewController: UIViewController  {
             
             let _material = SCNMaterial()
             _material.diffuse.contents = UIImage(named: "100x100_\(no).png")
-//          _material.diffuse.contents = UIColor.whiteColor()
+            //          _material.diffuse.contents = UIColor.whiteColor()
             _box.firstMaterial = _material
             
             baseBoxNode = SCNNode(geometry: _box)
@@ -279,20 +279,20 @@ class GameViewController: UIViewController  {
         return nil
     }
     
-
+    
     var baseCoinNode:SCNNode? = nil
     
     func createCoin(x:Float, y:Float, z:Float, no:Int)->SCNNode? {
         
         if baseCoinNode == nil {
-//            let _actions:[SCNAction] = [
-//                SCNAction.waitForDuration(NSTimeInterval( arc4random_uniform(5) )),
-//                SCNAction.repeatActionForever(
-//                    SCNAction.rotateByAngle(CGFloat(M_PI * 2), aroundAxis: SCNVector3(x:0,y:0,z:1), duration: 10.0)
-//                )]
+            //            let _actions:[SCNAction] = [
+            //                SCNAction.waitForDuration(NSTimeInterval( arc4random_uniform(5) )),
+            //                SCNAction.repeatActionForever(
+            //                    SCNAction.rotateByAngle(CGFloat(M_PI * 2), aroundAxis: SCNVector3(x:0,y:0,z:1), duration: 10.0)
+            //                )]
             
             let _coin = SCNCylinder(radius: 0.4, height: 0.1)
-//            let _coin = SCNPyramid(width: 0.2, height: 0.5, length: 0.2)
+            //            let _coin = SCNPyramid(width: 0.2, height: 0.5, length: 0.2)
             //        let _coin = SCNSphere(radius: 0.4)
             let _material = SCNMaterial()
             _material.diffuse.contents = UIColor.yellowColor()
@@ -300,9 +300,9 @@ class GameViewController: UIViewController  {
             _coin.firstMaterial = _material
             
             baseCoinNode = SCNNode(geometry: _coin)
-
-//            baseCoinNode!.runAction(SCNAction.sequence(_actions))
-
+            
+            //            baseCoinNode!.runAction(SCNAction.sequence(_actions))
+            
         }
         
         let _view = self.view as SCNView
@@ -317,7 +317,7 @@ class GameViewController: UIViewController  {
             
             let _cloneNode = baseCoinNode!.flattenedClone()
             _cloneNode.position = SCNVector3(x: x * 2,  y: y * 2, z: z * 2)
-//            _cloneNode.eulerAngles = SCNVector3(x:Float(M_PI_2 / 3),y:Float(M_PI_2 / 3),z:Float(M_PI_2 / 3))
+            //            _cloneNode.eulerAngles = SCNVector3(x:Float(M_PI_2 / 3),y:Float(M_PI_2 / 3),z:Float(M_PI_2 / 3))
             _cloneNode.name = "coin\(Int(x) + Int(y) * max + Int(z) * max * max)"
             
             // println(_cloneNode.name)
@@ -337,7 +337,7 @@ class GameViewController: UIViewController  {
         
         return nil
     }
-
+    
     
     // MARK: move
     var moving = false
@@ -345,7 +345,7 @@ class GameViewController: UIViewController  {
     func moveFront() {
         
         if moving == true {
-//            return
+            //            return
         }
         
         var _xyz = player.front.xyz()
@@ -355,12 +355,12 @@ class GameViewController: UIViewController  {
             return
         }
         
-//        moving = true
+        //        moving = true
         
         player.x = _xyz[0]
         player.y = _xyz[1]
         player.z = _xyz[2]
-
+        
         if _frontField.coin == true{
             
             let _view = self.view as SCNView?
@@ -368,13 +368,13 @@ class GameViewController: UIViewController  {
             if let _coinNode = _view!.scene!.rootNode.childNodeWithName(_name, recursively:true) {
                 _coinNode.removeFromParentNode()
             }
-       
+            
             _frontField.coin = false
             
             if let _gameScene = _view!.overlaySKScene as GameScene?{
                 _gameScene.refreshCoinLabel()
             }
-
+            
         }
         
         
@@ -390,20 +390,20 @@ class GameViewController: UIViewController  {
         default: break;
         }
         
-         let _position = SCNVector3(x:Float(player.x*2)+_xx,y:Float(player.y*2)+_yy,z:Float(player.z*2)+_zz)
-         let _action =
-         SCNAction.moveTo(_position,duration: 0.2)
+        let _position = SCNVector3(x:Float(player.x*2)+_xx,y:Float(player.y*2)+_yy,z:Float(player.z*2)+_zz)
+        let _action =
+        SCNAction.moveTo(_position,duration: 0.2)
         
-         cameraNode!.runAction(
+        cameraNode!.runAction(
             SCNAction.sequence([_action,
                 SCNAction.runBlock { (node) -> Void in
-//                    self.moving = false
+                    //                    self.moving = false
                 }]
             )
         )
-
-//        lightNode!.position = _position
-//        cameraNode!.position = SCNVector3(x:Float(player.x*2)+_xx,y:Float(player.y*2)+_yy,z:Float(player.z*2)+_zz)
+        
+        //        lightNode!.position = _position
+        //        cameraNode!.position = SCNVector3(x:Float(player.x*2)+_xx,y:Float(player.y*2)+_yy,z:Float(player.z*2)+_zz)
         
         return
     }
@@ -449,32 +449,32 @@ class GameViewController: UIViewController  {
         }
         
         #if false
-        var _vec:SCNVector3? = nil
-        var _angle:CGFloat = 0
-        
-        if rotation == .UP {
+            var _vec:SCNVector3? = nil
+            var _angle:CGFloat = 0
+            
+            if rotation == .UP {
             _vec = SCNVector3(x: 1, y: 0, z: 0)
             _angle = CGFloat(M_PI_2)
-        } else if rotation == .DOWN {
+            } else if rotation == .DOWN {
             _vec = SCNVector3(x: 1, y: 0, z: 0)
             _angle = CGFloat(M_PI_2) * -1
-        } else if rotation == .RIGHT {
+            } else if rotation == .RIGHT {
             _vec = SCNVector3(x: 0, y: 0, z: 1)
             _angle = CGFloat(M_PI_2)
-        } else if rotation == .LEFT {
+            } else if rotation == .LEFT {
             _vec = SCNVector3(x: 0, y: 0, z: 1)
             _angle = CGFloat(M_PI_2) * -1
-        } else {
+            } else {
             return
-        }
+            }
         #endif
         // let _rotateAction = SCNAction.rotateByX( _xAngle, y: _yAngle, z: _zAngle, duration: 0.5)
         
         if moving == true {
-//            return
+            //            return
         }
         
-//        moving = true
+        //        moving = true
         
         let _rotateAction = SCNAction.rotateByAngle(CGFloat(M_PI_2) * _n , aroundAxis: _vec!, duration: 0.5)
         
@@ -497,14 +497,14 @@ class GameViewController: UIViewController  {
         
         let _position = SCNVector3(x:Float(player.x*2) + _xx, y:Float(player.y*2) + _yy, z:Float(player.z*2) + _zz)
         
-//        lightNode!.position = _position
+        //        lightNode!.position = _position
         
         let _moveAction = SCNAction.moveTo(_position, duration: 0.1)
         
-//        let _groupAction = SCNAction.group([_rotateAction, _moveAction])
-//        let _resetAction = SCNAction.runBlock { (node) -> Void in
-//           self.resetAngle()
-//        }
+        //        let _groupAction = SCNAction.group([_rotateAction, _moveAction])
+        //        let _resetAction = SCNAction.runBlock { (node) -> Void in
+        //           self.resetAngle()
+        //        }
         
         cameraNode!.runAction(
             SCNAction.sequence([
@@ -518,78 +518,78 @@ class GameViewController: UIViewController  {
                     
                     println("x :\(_xAngle) y :\(_yAngle) z :\(_zAngle)")
                     
-//                    self.moving = false
+                    //                    self.moving = false
                     
                     // self.resetAngle()
                 }
                 ])
         );
     }
-//    
-//    func resetAngle() {
-//        
-//        let _pi2 = Float(M_PI_2)
-//        var _vec:SCNVector3? = nil
-//        
-//        switch(player.front) {
-//        case .N:
-//            switch(player.head) {
-//            case .C: _vec = SCNVector3(x: _pi2, y: 0, z: 0);
-//            case .F: _vec = SCNVector3(x: _pi2, y: _pi2 * 2, z: 0);
-//            case .E: _vec = SCNVector3(x: _pi2, y: _pi2 * 1, z: 0);
-//            case .W: _vec = SCNVector3(x: _pi2, y: _pi2 * 3, z: 0);
-//            default: break;
-//            }
-//        case .S:
-//            switch(player.head) {
-//            case .C: _vec  = SCNVector3(x: _pi2 * 3, y: _pi2 * 2, z: 0 );
-//            case .F: _vec  = SCNVector3(x: _pi2 * 3, y: 0, z: 0 );
-//            case .E: _vec  = SCNVector3(x: _pi2 * 3, y: _pi2 * 3, z: 0 );
-//            case .W: _vec  = SCNVector3(x: _pi2 * 3, y: _pi2, z: 0 );
-//            default: break;
-//            }
-//        case .E:
-//            switch(player.head) {
-//            case .N:_vec  = SCNVector3(x: _pi2 * 3, y: _pi2 * 3, z: _pi2 );
-//            case .S:_vec  = SCNVector3(x: _pi2 * 3, y: _pi2 * 1, z: _pi2 );
-//            case .C:_vec  = SCNVector3(x: _pi2 * 3, y: _pi2 * 2, z: _pi2 );
-//            case .F:_vec  = SCNVector3(x: _pi2 * 3, y: _pi2 * 0, z: _pi2  );
-//            default: break;
-//            }
-//        case .W:
-//            switch(player.head) {
-//            case .N:_vec  = SCNVector3(x: _pi2 * 3, y: _pi2 * 1, z: _pi2 * 3);
-//            case .S:_vec  = SCNVector3(x: _pi2 * 3, y: _pi2 * 3, z: _pi2 * 3);
-//            case .C:_vec  = SCNVector3(x: _pi2 * 3, y: _pi2 * 2, z: _pi2 * 3);
-//            case .F:_vec  = SCNVector3(x: _pi2 * 3, y: _pi2 * 0, z: _pi2 * 3);
-//            default: break;
-//            }
-//        case .C:
-//            switch(player.head) {
-//            case .N:_vec = SCNVector3(x: 0, y: _pi2*2, z: 0 );
-//            case .S:_vec = SCNVector3(x: 0, y: _pi2*2, z: _pi2*2 );
-//                
-//            case .E:_vec = SCNVector3(x: 0, y: _pi2*4, z: _pi2 );
-//                
-//            case .W:_vec = SCNVector3(x: 0, y: _pi2*4, z: _pi2 * 3);
-//            default: break;
-//            }
-//        case .F:
-//            switch(player.head) {
-//            case .N:_vec = SCNVector3(x: 0, y: 0, z: 0 );
-//            case .S:_vec = SCNVector3(x: 0, y: 0, z: _pi2 * 2 );
-//            case .E:_vec = SCNVector3(x: 0, y: 0, z: _pi2 * 3 );
-//            case .W:_vec = SCNVector3(x: 0, y: 0, z: _pi2 );
-//            default: break;
-//            }
-//        default: break;
-//            
-//        }
-//        
-//        println("resetAnglo front \(player.front.toString()) head \(player.head.toString())")
-//        
-//        cameraNode!.eulerAngles = _vec!
-//    }
-//    
+    //
+    //    func resetAngle() {
+    //
+    //        let _pi2 = Float(M_PI_2)
+    //        var _vec:SCNVector3? = nil
+    //
+    //        switch(player.front) {
+    //        case .N:
+    //            switch(player.head) {
+    //            case .C: _vec = SCNVector3(x: _pi2, y: 0, z: 0);
+    //            case .F: _vec = SCNVector3(x: _pi2, y: _pi2 * 2, z: 0);
+    //            case .E: _vec = SCNVector3(x: _pi2, y: _pi2 * 1, z: 0);
+    //            case .W: _vec = SCNVector3(x: _pi2, y: _pi2 * 3, z: 0);
+    //            default: break;
+    //            }
+    //        case .S:
+    //            switch(player.head) {
+    //            case .C: _vec  = SCNVector3(x: _pi2 * 3, y: _pi2 * 2, z: 0 );
+    //            case .F: _vec  = SCNVector3(x: _pi2 * 3, y: 0, z: 0 );
+    //            case .E: _vec  = SCNVector3(x: _pi2 * 3, y: _pi2 * 3, z: 0 );
+    //            case .W: _vec  = SCNVector3(x: _pi2 * 3, y: _pi2, z: 0 );
+    //            default: break;
+    //            }
+    //        case .E:
+    //            switch(player.head) {
+    //            case .N:_vec  = SCNVector3(x: _pi2 * 3, y: _pi2 * 3, z: _pi2 );
+    //            case .S:_vec  = SCNVector3(x: _pi2 * 3, y: _pi2 * 1, z: _pi2 );
+    //            case .C:_vec  = SCNVector3(x: _pi2 * 3, y: _pi2 * 2, z: _pi2 );
+    //            case .F:_vec  = SCNVector3(x: _pi2 * 3, y: _pi2 * 0, z: _pi2  );
+    //            default: break;
+    //            }
+    //        case .W:
+    //            switch(player.head) {
+    //            case .N:_vec  = SCNVector3(x: _pi2 * 3, y: _pi2 * 1, z: _pi2 * 3);
+    //            case .S:_vec  = SCNVector3(x: _pi2 * 3, y: _pi2 * 3, z: _pi2 * 3);
+    //            case .C:_vec  = SCNVector3(x: _pi2 * 3, y: _pi2 * 2, z: _pi2 * 3);
+    //            case .F:_vec  = SCNVector3(x: _pi2 * 3, y: _pi2 * 0, z: _pi2 * 3);
+    //            default: break;
+    //            }
+    //        case .C:
+    //            switch(player.head) {
+    //            case .N:_vec = SCNVector3(x: 0, y: _pi2*2, z: 0 );
+    //            case .S:_vec = SCNVector3(x: 0, y: _pi2*2, z: _pi2*2 );
+    //
+    //            case .E:_vec = SCNVector3(x: 0, y: _pi2*4, z: _pi2 );
+    //
+    //            case .W:_vec = SCNVector3(x: 0, y: _pi2*4, z: _pi2 * 3);
+    //            default: break;
+    //            }
+    //        case .F:
+    //            switch(player.head) {
+    //            case .N:_vec = SCNVector3(x: 0, y: 0, z: 0 );
+    //            case .S:_vec = SCNVector3(x: 0, y: 0, z: _pi2 * 2 );
+    //            case .E:_vec = SCNVector3(x: 0, y: 0, z: _pi2 * 3 );
+    //            case .W:_vec = SCNVector3(x: 0, y: 0, z: _pi2 );
+    //            default: break;
+    //            }
+    //        default: break;
+    //
+    //        }
+    //
+    //        println("resetAnglo front \(player.front.toString()) head \(player.head.toString())")
+    //
+    //        cameraNode!.eulerAngles = _vec!
+    //    }
+    //
     
 }

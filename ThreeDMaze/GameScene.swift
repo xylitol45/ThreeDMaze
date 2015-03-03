@@ -19,9 +19,13 @@ class GameScene: SKScene {
     var gameViewController:GameViewController! = nil
     
     var contentCreated = false
-    var lastUpdateTime:CFTimeInterval = 0
+    var startTime:CFTimeInterval? = nil
+    var lastTime:CFTimeInterval = 0
+    
+    var displayLink:CADisplayLink? = nil
     
     
+    // MARK:イベント
     override func didMoveToView(view: SKView) {
         if (!contentCreated) {
             createContentScene()
@@ -38,26 +42,83 @@ class GameScene: SKScene {
     //        }
     //    }
     
-    
-    var lastTime:CFTimeInterval = 0
-    
     func loop(link:CADisplayLink) {
+        
+        
+        if startTime == nil {
+            startTime = link.timestamp
+        }
         
         println("loop \(link.timestamp)")
         
-        if link.timestamp - lastUpdateTime > 0.2 {
+        if link.timestamp - lastTime > 0.01 {
             
-            lastUpdateTime = link.timestamp
+            lastTime = link.timestamp
             
-            refreshTimeLabel(Int(lastUpdateTime))
+            refreshTimeLabel(Double(lastTime - startTime!))
             
             self.view!.setNeedsDisplay()
         }
+    }
+    
+    func touchButton(sender: UIButton){
+        println(sender)
         
+        if sender.titleLabel?.text == nil {
+            return
+        }
+        
+        
+        let _text = sender.titleLabel!.text!
+        
+        let _player = gameViewController.player
+        
+        if _text == "[EXIT]" {
+            
+            displayLink?.invalidate()
+            displayLink = nil
+            
+            gameViewController.dismissViewControllerAnimated(false, completion: nil)
+            return
+        }
+        
+        if _text == "[RIGHT]" || _text == "[LEFT]" || _text == "[UP]" || _text == "[DOWN]" {
+            if gameEnd {
+                return
+            }
+            var _rotation:Rotation? = nil
+            
+            switch (_text) {
+            case "[RIGHT]":
+                _rotation = .RIGHT
+            case "[LEFT]":
+                _rotation = .LEFT
+            case "[UP]":
+                _rotation = .UP
+            case "[DOWN]":
+                _rotation = .DOWN
+            default:break;
+            }
+            if _rotation != nil {
+                gameViewController.rotateFront(_rotation!)
+            } else {
+                return
+            }
+        } else if _text == "[FRONT]" {
+            if gameEnd {
+                return
+            }
+            gameViewController.moveFront()
+            
+        } else {
+            return
+        }
+        
+        createMiniMap(gameViewController.map, max: gameViewController.max, z: _player.z)
         
     }
     
-    var displayLink:CADisplayLink? = nil
+    
     
     // MARK: シーン作成
     func createContentScene() {
@@ -155,61 +216,6 @@ class GameScene: SKScene {
         
     }
     
-    func touchButton(sender: UIButton){
-        println(sender)
-        
-        if sender.titleLabel?.text == nil {
-            return
-        }
-        
-        let _text = sender.titleLabel!.text!
-        
-        let _player = gameViewController.player
-        
-        if _text == "[EXIT]" {
-            
-            displayLink?.invalidate()
-            displayLink = nil
-            
-            gameViewController.dismissViewControllerAnimated(false, completion: nil)
-            return
-        }
-        
-        if _text == "[RIGHT]" || _text == "[LEFT]" || _text == "[UP]" || _text == "[DOWN]" {
-            if gameEnd {
-                return
-            }
-            var _rotation:Rotation? = nil
-            
-            switch (_text) {
-            case "[RIGHT]":
-                _rotation = .RIGHT
-            case "[LEFT]":
-                _rotation = .LEFT
-            case "[UP]":
-                _rotation = .UP
-            case "[DOWN]":
-                _rotation = .DOWN
-            default:break;
-            }
-            if _rotation != nil {
-                gameViewController.rotateFront(_rotation!)
-            } else {
-                return
-            }
-        } else if _text == "[FRONT]" {
-            if gameEnd {
-                return
-            }
-            gameViewController.moveFront()
-            
-        } else {
-            return
-        }
-        
-        createMiniMap(gameViewController.map, max: gameViewController.max, z: _player.z)
-        
-    }
     
     func refreshCoinLabel() {
         var _coinLabel = childNodeWithName("coin") as SKLabelNode?
@@ -239,7 +245,7 @@ class GameScene: SKScene {
         }
     }
     
-    func refreshTimeLabel(time:Int) {
+    func refreshTimeLabel(time:Double) {
         var _label = childNodeWithName("time") as SKLabelNode?
         if _label == nil {
             _label = SKLabelNode(text: "")
@@ -273,9 +279,10 @@ class GameScene: SKScene {
         _label.fontName = CommonUtil.font(15).fontName
         _label.fontColor = UIColor.redColor()
         addChild(_label)
-     
-        gameViewController?.titleViewController?.setHighscore(lastUpdateTime)
+        
+        gameViewController?.titleViewController?.setHighscore(lastTime)
     }
+    
     
     /*
     func refreshScreenMiniMap(front:Direction, head:Direction, map:[Field], max:Int) {
