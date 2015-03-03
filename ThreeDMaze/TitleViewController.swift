@@ -13,7 +13,7 @@ import SceneKit
 class TitleViewController: UIViewController  {
     
     var max = 7
-    var highscores:[String:CFTimeInterval] = [:]
+    var highscores:[String:Double] = [:]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,7 +22,6 @@ class TitleViewController: UIViewController  {
         
         let scnView = self.view as SCNView
         
-        println(scnView.frame)
         
         scnView.allowsCameraControl = false
         scnView.showsStatistics = false
@@ -53,7 +52,7 @@ class TitleViewController: UIViewController  {
         _scene.rootNode.addChildNode(ambientLightNode)
         
         // createTitleBox
-        createTitleBox()
+        refreshTitleBox()
         
         let _frame = self.view.frame
         
@@ -100,7 +99,13 @@ class TitleViewController: UIViewController  {
         }
     }
     
-    func createTitleBox() {
+    func refreshTitleBox() {
+        
+        let scnView = self.view as SCNView
+        
+        if let _boxNodePre = scnView.scene?.rootNode.childNodeWithName("titleBox", recursively: false) {
+            _boxNodePre.removeFromParentNode()
+        }
     
         // create box
         let _box = SCNBox(width: 2, height: 2, length: 2, chamferRadius: 0)
@@ -109,6 +114,7 @@ class TitleViewController: UIViewController  {
         _box.firstMaterial = _material
         let _boxNode = SCNNode(geometry: _box)
         _boxNode.position = SCNVector3(x:-1.5, y:0, z:0)
+        _boxNode.name = "titleBox"
         
         let _action = SCNAction.rotateByAngle(CGFloat(M_PI) * -2, aroundAxis: SCNVector3(x: 1, y: 1, z: 1), duration: 10)
         
@@ -116,7 +122,6 @@ class TitleViewController: UIViewController  {
             SCNAction.repeatActionForever(_action))
         
         
-        let scnView = self.view as SCNView
         scnView.scene?.rootNode.addChildNode(_boxNode)
         
         return
@@ -148,15 +153,16 @@ class TitleViewController: UIViewController  {
         var text:String = "ThreeDMaze"
         
         if let _7time = highscores["7"] {
-            text += "\n\n[7x7x7]\n\(_7time)"
+            text += "\n\n[7x7x7]\n" + String(format:"%.2f", _7time)
         }
         if let _9time = highscores["9"]  {
-            text += "\n\n[9x9x9]\n\(_9time)"
+            text += "\n\n[9x9x9]\n" + String(format:"%.2f", _9time)
         }
         if let _11time = highscores["11"] {
-            text += "\n\n[11x11x11]\n\(_11time)"
+            text += "\n\n[11x11x11]\n"  + String(format:"%.2f", _11time)
         }
         
+//        text += "1\n2\n3\n4\n5\n6\n6\n6\n"
         
         text.drawInRect(textRect, withAttributes: textFontAttributes)
         
@@ -215,7 +221,7 @@ class TitleViewController: UIViewController  {
     
     func touchButton(sender: UIButton){
         
-        println(sender)
+        
         let _text = sender.titleLabel?.text
         if _text == nil {
             return
@@ -231,7 +237,12 @@ class TitleViewController: UIViewController  {
         performSegueWithIdentifier("openGameViewController", sender: self)
     }
     
-    func setHighscore(time:CFTimeInterval) {
+    func setHighscore(time:Double) {
+        
+        if time <= 0 {
+            return
+        }
+        
         let _key = "\(self.max)"
         let _time = highscores[_key] ?? 0
         if _time == 0 || time < _time {
@@ -239,5 +250,7 @@ class TitleViewController: UIViewController  {
         }
         NSUserDefaults.standardUserDefaults().setObject(highscores, forKey: "highscores")
         NSUserDefaults.standardUserDefaults().synchronize()
+    
+        refreshTitleBox()
     }
 }

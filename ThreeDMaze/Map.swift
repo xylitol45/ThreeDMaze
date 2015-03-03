@@ -35,8 +35,6 @@ class Map {
         
         _map[_x+_y*_max+_z*_max*_max].wall = false
         
-        
-        
         while(true) {
             while(true) {
                 var _flg=false
@@ -105,7 +103,6 @@ class Map {
             _y = ((_road - _x) % (_max*_max)) / _max
             _z = (_road - _x - _y * _max) / (_max*_max)
             
-            println("road:\(_road) x:\(_x) y:\(_y) z:\(_z)")
             
         }
 
@@ -136,5 +133,20 @@ class Map {
         return map[_n]
     }
     
+    class func checkMapCoin(map:[Field])->Bool {
+        if map.count == 0 {
+            return false
+        }
+        
+        var _count = map.reduce(0, combine: { (n, f) -> Int in
+            return n + (f.coin ? 1 : 0);
+        })
+        
+        if _count < 2 {
+            return false
+        }
+        
+        return true
+    }
     
 }

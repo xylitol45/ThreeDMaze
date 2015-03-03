@@ -36,7 +36,13 @@ class GameViewController: UIViewController  {
         super.viewDidLoad()
         
         let _max = max
-        map = Map.create(_max)
+        
+        while(true) {
+            map = Map.create(_max)
+            if Map.checkMapCoin(map) {
+                break
+            }
+        }
         
         // create a new scene
         // let scene = SCNScene(named: "art.scnassets/ship.dae")!
@@ -47,7 +53,6 @@ class GameViewController: UIViewController  {
         
         let scnView = self.view as SCNView
         
-        println(scnView.frame)
         
         scnView.allowsCameraControl = false
         scnView.showsStatistics = true
@@ -402,9 +407,6 @@ class GameViewController: UIViewController  {
             )
         )
         
-        //        lightNode!.position = _position
-        //        cameraNode!.position = SCNVector3(x:Float(player.x*2)+_xx,y:Float(player.y*2)+_yy,z:Float(player.z*2)+_zz)
-        
         return
     }
     
@@ -447,29 +449,6 @@ class GameViewController: UIViewController  {
         } else {
             return
         }
-        
-        #if false
-            var _vec:SCNVector3? = nil
-            var _angle:CGFloat = 0
-            
-            if rotation == .UP {
-            _vec = SCNVector3(x: 1, y: 0, z: 0)
-            _angle = CGFloat(M_PI_2)
-            } else if rotation == .DOWN {
-            _vec = SCNVector3(x: 1, y: 0, z: 0)
-            _angle = CGFloat(M_PI_2) * -1
-            } else if rotation == .RIGHT {
-            _vec = SCNVector3(x: 0, y: 0, z: 1)
-            _angle = CGFloat(M_PI_2)
-            } else if rotation == .LEFT {
-            _vec = SCNVector3(x: 0, y: 0, z: 1)
-            _angle = CGFloat(M_PI_2) * -1
-            } else {
-            return
-            }
-        #endif
-        // let _rotateAction = SCNAction.rotateByX( _xAngle, y: _yAngle, z: _zAngle, duration: 0.5)
-        
         if moving == true {
             //            return
         }
@@ -501,95 +480,11 @@ class GameViewController: UIViewController  {
         
         let _moveAction = SCNAction.moveTo(_position, duration: 0.1)
         
-        //        let _groupAction = SCNAction.group([_rotateAction, _moveAction])
-        //        let _resetAction = SCNAction.runBlock { (node) -> Void in
-        //           self.resetAngle()
-        //        }
         
         cameraNode!.runAction(
             SCNAction.sequence([
-                SCNAction.group([_rotateAction, _moveAction]),
-                SCNAction.runBlock { (node) -> Void in
-                    let _angles = node.eulerAngles
-                    let _xAngle = _angles.x / Float(M_PI_2)
-                    let _yAngle = _angles.y / Float(M_PI_2)
-                    let _zAngle = _angles.z / Float(M_PI_2)
-                    
-                    
-                    println("x :\(_xAngle) y :\(_yAngle) z :\(_zAngle)")
-                    
-                    //                    self.moving = false
-                    
-                    // self.resetAngle()
-                }
+                SCNAction.group([_rotateAction, _moveAction])
                 ])
         );
     }
-    //
-    //    func resetAngle() {
-    //
-    //        let _pi2 = Float(M_PI_2)
-    //        var _vec:SCNVector3? = nil
-    //
-    //        switch(player.front) {
-    //        case .N:
-    //            switch(player.head) {
-    //            case .C: _vec = SCNVector3(x: _pi2, y: 0, z: 0);
-    //            case .F: _vec = SCNVector3(x: _pi2, y: _pi2 * 2, z: 0);
-    //            case .E: _vec = SCNVector3(x: _pi2, y: _pi2 * 1, z: 0);
-    //            case .W: _vec = SCNVector3(x: _pi2, y: _pi2 * 3, z: 0);
-    //            default: break;
-    //            }
-    //        case .S:
-    //            switch(player.head) {
-    //            case .C: _vec  = SCNVector3(x: _pi2 * 3, y: _pi2 * 2, z: 0 );
-    //            case .F: _vec  = SCNVector3(x: _pi2 * 3, y: 0, z: 0 );
-    //            case .E: _vec  = SCNVector3(x: _pi2 * 3, y: _pi2 * 3, z: 0 );
-    //            case .W: _vec  = SCNVector3(x: _pi2 * 3, y: _pi2, z: 0 );
-    //            default: break;
-    //            }
-    //        case .E:
-    //            switch(player.head) {
-    //            case .N:_vec  = SCNVector3(x: _pi2 * 3, y: _pi2 * 3, z: _pi2 );
-    //            case .S:_vec  = SCNVector3(x: _pi2 * 3, y: _pi2 * 1, z: _pi2 );
-    //            case .C:_vec  = SCNVector3(x: _pi2 * 3, y: _pi2 * 2, z: _pi2 );
-    //            case .F:_vec  = SCNVector3(x: _pi2 * 3, y: _pi2 * 0, z: _pi2  );
-    //            default: break;
-    //            }
-    //        case .W:
-    //            switch(player.head) {
-    //            case .N:_vec  = SCNVector3(x: _pi2 * 3, y: _pi2 * 1, z: _pi2 * 3);
-    //            case .S:_vec  = SCNVector3(x: _pi2 * 3, y: _pi2 * 3, z: _pi2 * 3);
-    //            case .C:_vec  = SCNVector3(x: _pi2 * 3, y: _pi2 * 2, z: _pi2 * 3);
-    //            case .F:_vec  = SCNVector3(x: _pi2 * 3, y: _pi2 * 0, z: _pi2 * 3);
-    //            default: break;
-    //            }
-    //        case .C:
-    //            switch(player.head) {
-    //            case .N:_vec = SCNVector3(x: 0, y: _pi2*2, z: 0 );
-    //            case .S:_vec = SCNVector3(x: 0, y: _pi2*2, z: _pi2*2 );
-    //
-    //            case .E:_vec = SCNVector3(x: 0, y: _pi2*4, z: _pi2 );
-    //
-    //            case .W:_vec = SCNVector3(x: 0, y: _pi2*4, z: _pi2 * 3);
-    //            default: break;
-    //            }
-    //        case .F:
-    //            switch(player.head) {
-    //            case .N:_vec = SCNVector3(x: 0, y: 0, z: 0 );
-    //            case .S:_vec = SCNVector3(x: 0, y: 0, z: _pi2 * 2 );
-    //            case .E:_vec = SCNVector3(x: 0, y: 0, z: _pi2 * 3 );
-    //            case .W:_vec = SCNVector3(x: 0, y: 0, z: _pi2 );
-    //            default: break;
-    //            }
-    //        default: break;
-    //
-    //        }
-    //
-    //        println("resetAnglo front \(player.front.toString()) head \(player.head.toString())")
-    //
-    //        cameraNode!.eulerAngles = _vec!
-    //    }
-    //
-    
 }

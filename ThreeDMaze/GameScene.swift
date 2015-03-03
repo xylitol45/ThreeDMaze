@@ -11,10 +11,7 @@
 import SpriteKit
 import SceneKit
 
-
 class GameScene: SKScene {
-    
-    
     
     var gameViewController:GameViewController! = nil
     
@@ -24,6 +21,8 @@ class GameScene: SKScene {
     
     var displayLink:CADisplayLink? = nil
     
+    var gameEnd = false
+
     
     // MARK:イベント
     override func didMoveToView(view: SKView) {
@@ -49,7 +48,6 @@ class GameScene: SKScene {
             startTime = link.timestamp
         }
         
-        println("loop \(link.timestamp)")
         
         if link.timestamp - lastTime > 0.01 {
             
@@ -62,7 +60,6 @@ class GameScene: SKScene {
     }
     
     func touchButton(sender: UIButton){
-        println(sender)
         
         if sender.titleLabel?.text == nil {
             return
@@ -118,14 +115,40 @@ class GameScene: SKScene {
         
     }
     
-    
-    
+    // MARK:終了
+    func doGameEnd() {
+        
+        if gameEnd {
+            return
+        }
+        
+        gameEnd = true
+        
+        displayLink?.invalidate()
+        displayLink = nil
+        
+        let nowTime = Double(lastTime - startTime!)
+        
+        refreshTimeLabel(nowTime)
+        
+        var _label = SKLabelNode(text: "")
+        _label.position = CGPointMake(CGRectGetMidX(frame), CGRectGetMaxY(frame) * 0.75)
+        _label.zPosition = 1000
+        _label.fontSize = 15
+        _label.fontName = CommonUtil.font(15).fontName
+        _label.fontColor = UIColor.redColor()
+        _label.text = String(format:"GAME CLEAR.TIME %.2f", nowTime)
+        addChild(_label)
+        
+        gameViewController?.titleViewController?.setHighscore(nowTime)
+    }
+
     // MARK: シーン作成
     func createContentScene() {
         
         if displayLink == nil {
             displayLink = CADisplayLink(target: self, selector: Selector("loop:"))
-            displayLink!.addToRunLoop(NSRunLoop.currentRunLoop(), forMode: NSRunLoopCommonModes)
+            displayLink?.addToRunLoop(NSRunLoop.currentRunLoop(), forMode: NSRunLoopCommonModes)
         }
         
         createLabel()
@@ -136,6 +159,9 @@ class GameScene: SKScene {
     
     func createMiniMap(map:[Field], max:Int, z:Int) {
         
+        let _baseX = 30
+        let _baseY = Int(CGRectGetMaxY(frame) - 110)
+        
         self.enumerateChildNodesWithName("wall") {
             node, stop in
             node.removeFromParent()
@@ -143,14 +169,20 @@ class GameScene: SKScene {
         for _y in 0..<max {
             for _x in 0..<max {
                 let _field = map[_x + _y * max + z * max * max]
-                if _field.wall == false {
+                
+                if !_field.wall && !_field.coin {
                     continue
+                }
+                
+                var _color = SKColor.blackColor()
+                if _field.coin {
+                    _color = SKColor.yellowColor()
                 }
                 
                 let _shape =  SKShapeNode(rect: CGRectMake(0, 0, 5, 5));
                 _shape.strokeColor = SKColor.blackColor()
-                _shape.fillColor=SKColor.blackColor()
-                _shape.position = CGPointMake(CGFloat(_x*5+50), CGFloat(_y*5+50))
+                _shape.fillColor = _color
+                _shape.position = CGPointMake(CGFloat(_x*5+_baseX), CGFloat(_y*5+_baseY))
                 _shape.name = "wall"
                 _shape.zPosition = 1000
                 self.addChild(_shape)
@@ -163,7 +195,7 @@ class GameScene: SKScene {
         let _redShape =  SKShapeNode(rect: CGRectMake(0, 0, 5, 5));
         _redShape.strokeColor = SKColor.blackColor()
         _redShape.fillColor=SKColor.redColor()
-        _redShape.position = CGPointMake(CGFloat(_x*5+50), CGFloat(_y*5+50))
+        _redShape.position = CGPointMake(CGFloat(_x*5+_baseX), CGFloat(_y*5+_baseY))
         _redShape.name = "wall"
         _redShape.zPosition = 1000
         self.addChild(_redShape)
@@ -259,29 +291,9 @@ class GameScene: SKScene {
             addChild(_label!)
         }
         
-        _label!.text = "TIME \(time)"
+        _label!.text = String(format: "TIME %.2f", time)
     }
     
-    var gameEnd = false
-    
-    func doGameEnd() {
-        
-        if gameEnd {
-            return
-        }
-        
-        gameEnd = true
-        
-        var _label = SKLabelNode(text: "GAME CLEAR.\nOK!!")
-        _label.position = CGPointMake(CGRectGetMidX(frame), CGRectGetMaxY(frame) * 0.75)
-        _label.zPosition = 1000
-        _label.fontSize = 15
-        _label.fontName = CommonUtil.font(15).fontName
-        _label.fontColor = UIColor.redColor()
-        addChild(_label)
-        
-        gameViewController?.titleViewController?.setHighscore(lastTime)
-    }
     
     
     /*
