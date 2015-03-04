@@ -6,7 +6,6 @@
 //  Copyright (c) 2015年 yoshimura. All rights reserved.
 //
 
-// これが正しいもの 20150210
 
 import SpriteKit
 import SceneKit
@@ -310,8 +309,6 @@ class GameScene: SKScene {
         
         _label!.text = String(format: "TIME %.2f", time)
     }
-    
-    
     
     /*
     func refreshScreenMiniMap(front:Direction, head:Direction, map:[Field], max:Int) {
