@@ -136,8 +136,8 @@
 				07E39AE51A8D0B1200279A1E /* Map.swift */,
 				07A799311A92601B00A5F96F /* Player.swift */,
 				07A759E71A81040E00914243 /* Main.storyboard */,
-				07A759EA1A81040E00914243 /* Images.xcassets */,
 				07A759EC1A81040E00914243 /* LaunchScreen.xib */,
+				07A759EA1A81040E00914243 /* Images.xcassets */,
 				07A759DD1A81040E00914243 /* Supporting Files */,
 			);
 			path = ThreeDMaze;
