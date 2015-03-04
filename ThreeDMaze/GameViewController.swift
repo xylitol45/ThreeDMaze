@@ -55,7 +55,7 @@ class GameViewController: UIViewController  {
         
         
         scnView.allowsCameraControl = false
-        scnView.showsStatistics = true
+        scnView.showsStatistics = false
         scnView.backgroundColor = UIColor.blackColor()
         
         scnView.scene = _scene
@@ -113,8 +113,6 @@ class GameViewController: UIViewController  {
             }
         }
         
-        
-        
         // add a tap gesture recognizer
         //        let tapGesture = UITapGestureRecognizer(target: self, action: "handleTap:")
         //        let gestureRecognizers = NSMutableArray()
@@ -127,7 +125,8 @@ class GameViewController: UIViewController  {
         
         
         
-        let _gameScene = GameScene(size:CGSizeMake(667,375))
+        let _gameScene = GameScene(size: scnView.frame.size)
+        // CGSizeMake(667,375))
         _gameScene.gameViewController = self
         _gameScene.scaleMode = .AspectFit
         _gameScene.createMiniMap(map, max: _max, z:player.z)

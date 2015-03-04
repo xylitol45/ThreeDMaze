@@ -140,6 +140,23 @@ class GameScene: SKScene {
         _label.text = String(format:"GAME CLEAR.TIME %.2f", nowTime)
         addChild(_label)
         
+        let _btn =
+            CommonUtil.makeButton("[EXIT]", point:CGPointMake(CGRectGetMaxX(frame) * 0.5, CGRectGetMaxY(frame)*0.75))
+        _btn.contentHorizontalAlignment = UIControlContentHorizontalAlignment.Center
+        _btn.addTarget(self, action: "touchButton:", forControlEvents:.TouchUpInside)
+        view!.addSubview(_btn)
+
+        for _view in view!.subviews {
+            let _btn = _view as? UIButton
+            let _text = _btn?.titleLabel?.text?
+            
+            if _text == "[RIGHT]" || _text == "[LEFT]"
+                || _text == "[UP]" || _text == "[DOWN]" || _text == "[FRONT]" {
+                _btn?.removeFromSuperview()
+            }
+            
+        }
+        
         gameViewController?.titleViewController?.setHighscore(nowTime)
     }
 
