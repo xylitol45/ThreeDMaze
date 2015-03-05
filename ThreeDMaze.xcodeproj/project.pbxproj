@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		071A160C1AA8936200DB7BC2 /* MyParticleSystem.scnp in Resources */ = {isa = PBXBuildFile; fileRef = 071A160A1AA8936200DB7BC2 /* MyParticleSystem.scnp */; };
-		071A160D1AA8936200DB7BC2 /* bokeh.png in Resources */ = {isa = PBXBuildFile; fileRef = 071A160B1AA8936200DB7BC2 /* bokeh.png */; };
+		071A16101AA89D6E00DB7BC2 /* bokeh.png in Resources */ = {isa = PBXBuildFile; fileRef = 071A160E1AA89D6E00DB7BC2 /* bokeh.png */; };
+		071A16111AA89D6E00DB7BC2 /* MyParticleSystem.scnp in Resources */ = {isa = PBXBuildFile; fileRef = 071A160F1AA89D6E00DB7BC2 /* MyParticleSystem.scnp */; };
 		0736CE221A9E11B300FF29D4 /* TitleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0736CE211A9E11B300FF29D4 /* TitleViewController.swift */; };
 		0776CF2B1A8B6F7000EDF73E /* Direction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0776CF281A8B6F7000EDF73E /* Direction.swift */; };
 		0776CF2C1A8B6F7000EDF73E /* Field.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0776CF291A8B6F7000EDF73E /* Field.swift */; };
@@ -37,8 +37,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		071A160A1AA8936200DB7BC2 /* MyParticleSystem.scnp */ = {isa = PBXFileReference; lastKnownFileType = file.scp; name = MyParticleSystem.scnp; path = ../MyParticleSystem.scnp; sourceTree = "<group>"; };
-		071A160B1AA8936200DB7BC2 /* bokeh.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = bokeh.png; path = ../bokeh.png; sourceTree = "<group>"; };
+		071A160E1AA89D6E00DB7BC2 /* bokeh.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bokeh.png; sourceTree = "<group>"; };
+		071A160F1AA89D6E00DB7BC2 /* MyParticleSystem.scnp */ = {isa = PBXFileReference; lastKnownFileType = file.scp; path = MyParticleSystem.scnp; sourceTree = "<group>"; };
 		0736CE211A9E11B300FF29D4 /* TitleViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TitleViewController.swift; sourceTree = "<group>"; };
 		0776CF281A8B6F7000EDF73E /* Direction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Direction.swift; sourceTree = "<group>"; };
 		0776CF291A8B6F7000EDF73E /* Field.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Field.swift; sourceTree = "<group>"; };
@@ -110,8 +110,6 @@
 				071301C21A93AEDC009DF9AF /* Resources */,
 				07A759DF1A81040E00914243 /* AppDelegate.swift */,
 				261607321AA70FD4008EFEFF /* GameScene.swift */,
-				071A160A1AA8936200DB7BC2 /* MyParticleSystem.scnp */,
-				071A160B1AA8936200DB7BC2 /* bokeh.png */,
 				261607331AA70FD4008EFEFF /* GameViewController.swift */,
 				0736CE211A9E11B300FF29D4 /* TitleViewController.swift */,
 				07C5AE3D1AA20F1400BD02D6 /* CommonUtil.swift */,
@@ -120,6 +118,8 @@
 				0776CF2A1A8B6F7000EDF73E /* Rotation.swift */,
 				07E39AE51A8D0B1200279A1E /* Map.swift */,
 				07A799311A92601B00A5F96F /* Player.swift */,
+				071A160E1AA89D6E00DB7BC2 /* bokeh.png */,
+				071A160F1AA89D6E00DB7BC2 /* MyParticleSystem.scnp */,
 				07A759E71A81040E00914243 /* Main.storyboard */,
 				07A759EC1A81040E00914243 /* LaunchScreen.xib */,
 				07A759EA1A81040E00914243 /* Images.xcassets */,
@@ -233,11 +233,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				071A16101AA89D6E00DB7BC2 /* bokeh.png in Resources */,
 				07E39AE41A8CEE1F00279A1E /* 100x100.png in Resources */,
-				071A160C1AA8936200DB7BC2 /* MyParticleSystem.scnp in Resources */,
 				07A759EE1A81040E00914243 /* LaunchScreen.xib in Resources */,
 				07A759EB1A81040E00914243 /* Images.xcassets in Resources */,
-				071A160D1AA8936200DB7BC2 /* bokeh.png in Resources */,
+				071A16111AA89D6E00DB7BC2 /* MyParticleSystem.scnp in Resources */,
 				07A759E91A81040E00914243 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
