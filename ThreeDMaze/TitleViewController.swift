@@ -18,18 +18,17 @@ class TitleViewController: UIViewController  {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        if let _highscores = NSUserDefaults.standardUserDefaults().objectForKey("highscores")  as? [String:Double] {
+            highscores = _highscores
+        }
+        
         let _scene = SCNScene()
-        
         let scnView = self.view as SCNView
-        
-        
         scnView.allowsCameraControl = false
         scnView.showsStatistics = false
-        
         scnView.backgroundColor = UIColor.blackColor()
         
         scnView.scene = _scene
-        
         
         // create and add a camera to the scene
         let cameraNode = SCNNode()
@@ -53,6 +52,9 @@ class TitleViewController: UIViewController  {
         
         // createTitleBox
         refreshTitleBox()
+        
+        refreshParticleSystem()
+
         
         let _frame = self.view.frame
         
@@ -99,6 +101,31 @@ class TitleViewController: UIViewController  {
         }
     }
     
+    func refreshParticleSystem() {
+
+        let _count = highscores.count
+        
+        if _count == 0 {
+            return
+        }
+        
+        let _view = self.view as SCNView
+        if let _node = _view.scene?.rootNode.childNodeWithName("particleSystemBox", recursively: false) {
+            _node.removeFromParentNode()
+        }
+        
+        let _node = SCNNode()
+        _node.name = "particleSystemBox"
+        _node.position = SCNVector3(x:0,y:0, z:0)
+        _view.scene?.rootNode.addChildNode(_node)
+        let _parSys = SCNParticleSystem(named: "MyParticleSystem.scnp", inDirectory: "")
+        _parSys.birthRate = 50
+        _parSys.particleColor = (_count == 3 ? UIColor.yellowColor() : UIColor.whiteColor())
+        _node.addParticleSystem(_parSys)
+        
+        return;
+    }
+    
     func refreshTitleBox() {
         
         let scnView = self.view as SCNView
@@ -110,7 +137,7 @@ class TitleViewController: UIViewController  {
         // create box
         let _box = SCNBox(width: 2, height: 2, length: 2, chamferRadius: 0)
         let _material = SCNMaterial()
-        _material.diffuse.contents = self.drawText(UIImage(named: "100x100_0.png")!)
+        _material.diffuse.contents = self.drawText(UIImage(named: "100x100.png")!)
         _box.firstMaterial = _material
         let _boxNode = SCNNode(geometry: _box)
         _boxNode.position = SCNVector3(x:-1.5, y:0, z:0)
@@ -124,6 +151,14 @@ class TitleViewController: UIViewController  {
         
         scnView.scene?.rootNode.addChildNode(_boxNode)
         
+//        let _parSys = SCNParticleSystem()
+//        _parSys.birthRate = 100
+//        _parSys.particleColor = UIColor.yellowColor()
+//        _parSys.emissionDuration = 0.1
+//        _parSys.particleSize = 0.1
+//        _boxNode.addParticleSystem(_parSys)
+
+        
         return
     }
     
@@ -131,12 +166,11 @@ class TitleViewController: UIViewController  {
     
     func drawText(image :UIImage) ->UIImage {
         
-        if let _highscores:AnyObject = NSUserDefaults.standardUserDefaults().objectForKey("highscores") {
-            highscores = _highscores as [String:CFTimeInterval]
-        }
+        let _highscores =
+            NSUserDefaults.standardUserDefaults().objectForKey("highscores") as?  [String:CFTimeInterval]
         
 //        let font = UIFont(name: CommonUtil.fontName(), size: 32)
-        let font = CommonUtil.font(32)
+        let font = CommonUtil.font(30)
         let imageRect = CGRectMake(0,0,image.size.width,image.size.height)
         
         UIGraphicsBeginImageContext(image.size);
@@ -252,5 +286,7 @@ class TitleViewController: UIViewController  {
         NSUserDefaults.standardUserDefaults().synchronize()
     
         refreshTitleBox()
+        
+        refreshParticleSystem()
     }
 }

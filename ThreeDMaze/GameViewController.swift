@@ -28,10 +28,10 @@ class GameViewController: UIViewController  {
     
     var titleViewController:TitleViewController? = nil
     
-    //    func getCameraNode()->SCNNode {
-    //        return cameraNode!
-    //    }
+    var baseBoxNode:SCNNode? = nil
+    var baseCoinNode:SCNNode? = nil
     
+    // MARK: イベント
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -107,7 +107,7 @@ class GameViewController: UIViewController  {
                     }
                     
                     if _field.wall == true {
-                        createBox(Float(_x), y: Float(_y), z: Float(_z), no: 0)
+                        createBox(Float(_x), y: Float(_y), z: Float(_z))
                     }
                 }
             }
@@ -243,15 +243,13 @@ class GameViewController: UIViewController  {
     }
     
     // MARK: create
-    var baseBoxNode:SCNNode? = nil
-    
-    func createBox(x:Float, y:Float, z:Float, no:Int)->SCNNode? {
+    func createBox(x:Float, y:Float, z:Float)->SCNNode? {
         
         if baseBoxNode == nil {
             let _box = SCNBox(width: 2, height: 2, length: 2, chamferRadius: 0)
             
             let _material = SCNMaterial()
-            _material.diffuse.contents = UIImage(named: "100x100_\(no).png")
+            _material.diffuse.contents = UIImage(named: "100x100.png")
             //          _material.diffuse.contents = UIColor.whiteColor()
             _box.firstMaterial = _material
             
@@ -284,7 +282,6 @@ class GameViewController: UIViewController  {
     }
     
     
-    var baseCoinNode:SCNNode? = nil
     
     func createCoin(x:Float, y:Float, z:Float, no:Int)->SCNNode? {
         
@@ -344,13 +341,10 @@ class GameViewController: UIViewController  {
     
     
     // MARK: move
-    var moving = false
+
     
     func moveFront() {
         
-        if moving == true {
-            //            return
-        }
         
         var _xyz = player.front.xyz()
         _xyz = [player.x+_xyz[0], player.y+_xyz[1], player.z+_xyz[2]]
@@ -359,7 +353,7 @@ class GameViewController: UIViewController  {
             return
         }
         
-        //        moving = true
+        
         
         player.x = _xyz[0]
         player.y = _xyz[1]
@@ -448,11 +442,6 @@ class GameViewController: UIViewController  {
         } else {
             return
         }
-        if moving == true {
-            //            return
-        }
-        
-        //        moving = true
         
         let _rotateAction = SCNAction.rotateByAngle(CGFloat(M_PI_2) * _n , aroundAxis: _vec!, duration: 0.5)
         
