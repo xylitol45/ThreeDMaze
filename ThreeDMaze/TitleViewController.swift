@@ -86,11 +86,7 @@ class TitleViewController: UIViewController  {
     }
     
     override func supportedInterfaceOrientations() -> Int {
-        if UIDevice.currentDevice().userInterfaceIdiom == .Phone {
-            return Int(UIInterfaceOrientationMask.AllButUpsideDown.rawValue)
-        } else {
-            return Int(UIInterfaceOrientationMask.All.rawValue)
-        }
+        return Int(UIInterfaceOrientationMask.AllButUpsideDown.rawValue)
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
